@@ -3,7 +3,8 @@ import { Link, NavLink } from 'react-router-dom';
 import { FiSearch, FiUser, FiBox, FiLogOut, FiShoppingBag } from 'react-icons/fi';
 import { HiMenuAlt3 } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { ShopContext } from '../context/ShopContext';
 
 const Navbar = () => {
   const user = { firstName: 'John', lastName: 'Doe' };
@@ -14,6 +15,8 @@ const Navbar = () => {
 
   const [visible, setVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const { setShowSearch } = useContext(ShopContext);
 
   return (
     <div>
@@ -46,7 +49,7 @@ const Navbar = () => {
         </ul>
 
         <div className="flex items-center gap-6">
-          <FiSearch className="w-5 h-5 cursor-pointer" />
+          <FiSearch className="w-5 h-5 cursor-pointer" onClick={()=>setShowSearch(true)}/>
 
           <div className="relative">
             <div
@@ -83,7 +86,7 @@ const Navbar = () => {
       </div>
 
       {/* Sidebar Menu for Small Screen */}
-      <div className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all ${visible ? 'w-full' : 'w-0'}`}>
+      <div className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all z-20 ${visible ? 'w-full' : 'w-0'}`}>
   <div className='flex flex-col text-gray-800'>
     <div onClick={() => setVisible(false)} className='flex items-center gap-3 p-4 cursor-pointer transition-all hover:bg-gray-200'>
       <IoIosArrowDown className='w-6 h-6 rotate-90' />
@@ -95,6 +98,7 @@ const Navbar = () => {
     <NavLink onClick={() => setVisible(false)} className='py-3 pl-6 text-xl font-bold text-gray-700 hover:text-gray-700 transition-all' to='/contact'>Contact</NavLink>
   </div>
 </div>
+
 
     </div>
   );
