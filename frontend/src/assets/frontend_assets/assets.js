@@ -92,11 +92,12 @@ export const products = [
         _id: "aaaab",
         name: "Men Round Neck Pure Cotton T-shirt",
         description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
+        bigDescription: "This Men Round Neck Pure Cotton T-shirt is crafted from premium quality cotton fabric, ensuring breathability and comfort throughout the day. Its classic round neck design, paired with short sleeves, makes it a versatile addition to your casual wardrobe. The fabric is soft to the touch, lightweight, and durable for everyday wear. Ideal for layering or wearing on its own, this T-shirt can be paired with jeans, shorts, or joggers for a relaxed and stylish look. Available in multiple sizes to ensure a perfect fit for all body types.",
         price: 200,
-        image: [p_img2_1,p_img2_2,p_img2_3,p_img2_4],
+        image: [p_img2_1, p_img2_2, p_img2_3, p_img2_4],
         category: "Men",
         subCategory: "Topwear",
-        sizes: ["M", "L", "XL"],
+        sizes: ["S", "M", "L", "XL"],
         date: 1716621345448,
         bestseller: true
     },
@@ -146,7 +147,7 @@ export const products = [
         subCategory: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716622345448,
-        bestseller: false
+        bestseller: true
     },
     {
         _id: "aaaaj",

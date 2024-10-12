@@ -13,3 +13,16 @@ a.active hr {
         color: white;
     }
 }
+
+
+  
+::-webkit-scrollbar{
+    display: none;
+}
+
+.divider {
+    width: 8px; /* Can use w-8 in Tailwind */
+    height: 1px; /* Adjust as needed */
+    background-color: #414141;
+  }
+  
