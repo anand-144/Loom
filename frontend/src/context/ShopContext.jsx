@@ -14,7 +14,7 @@ const ShopContextProvider = (props) => {
 
     const [cartItems, setCartItems] = useState({});
 
-    const addToCart = async (itemId, size) => {
+    const addToCart = (itemId, size) => {
 
         if (!size) {
             toast.error('Select Product Size');
@@ -62,7 +62,7 @@ const ShopContextProvider = (props) => {
         return totalCount;
     };
 
-    const updateQuantity = async (itemId,size,quantity) => {
+    const updateQuantity = (itemId, size, quantity) => {
         let cartData = structuredClone(cartItems);
 
         cartData[itemId][size] = quantity;
@@ -70,11 +70,30 @@ const ShopContextProvider = (props) => {
         setCartItems(cartData);
     }
 
+    const getCartAmount = () => {
+        let totalAmount = 0;
+        for (const items in cartItems) {
+            let itemInfo = products.find((product) => product._id === items);
+            if (!itemInfo) continue; // Skip if product is not found
+            for (const item in cartItems[items]) {
+                try {
+                    if (cartItems[items][item] > 0) {
+                        totalAmount += itemInfo.price * cartItems[items][item];
+                    }
+                } catch (error) {
+                    console.error('Error calculating cart amount:', error);
+                }
+            }
+        }
+        return totalAmount;
+    };
+
     const value = {
         products, currency, delivery_fee,
         search, setSearch, showSearch, setShowSearch,
         cartItems, addToCart, updateCartItemQuantity,
-        getCartCount,updateQuantity
+        getCartCount, updateQuantity,
+        getCartAmount,
     };
 
     return (
