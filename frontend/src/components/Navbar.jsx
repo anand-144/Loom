@@ -16,7 +16,7 @@ const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  const { setShowSearch } = useContext(ShopContext);
+  const { setShowSearch , getCartCount} = useContext(ShopContext);
 
   return (
     <div>
@@ -78,7 +78,9 @@ const Navbar = () => {
 
           <Link to='/cart' className='relative'>
             <FiShoppingBag className='w-6 h-6' />
-            <p className='absolute right-[-5px] top-[-5px] w-4 text-center leading-4 bg-red-500 text-white aspect-square rounded-full text-[10px]'>10</p>
+            <p className='absolute right-[-5px] top-[-5px] w-4 text-center leading-4 bg-red-500 text-white aspect-square rounded-full text-[10px]'>
+              {getCartCount()}
+            </p>
           </Link>
 
           <HiMenuAlt3 className='w-6 h-6 sm:hidden' onClick={() => setVisible(true)} />

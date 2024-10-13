@@ -5,9 +5,8 @@ import ProductItem from './ProductItem';
 
 const LatestCollection = () => {
     const { products } = useContext(ShopContext);
-    const [visibleProducts, setVisibleProducts] = useState(10); // Initially display 10 products
+    const [visibleProducts, setVisibleProducts] = useState(5); 
 
-    // Use memoization to avoid recalculating sliced products unnecessarily
     const latestProducts = useMemo(() => {
         return products.slice(0, visibleProducts);
     }, [products, visibleProducts]);

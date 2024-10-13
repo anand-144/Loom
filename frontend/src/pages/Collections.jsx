@@ -3,7 +3,7 @@ import { ShopContext } from '../context/ShopContext';
 import { IoIosArrowDown } from "react-icons/io";
 import ProductItem from '../components/ProductItem';
 import Title from '../components/Title';
-import { debounce } from 'lodash'; // For debouncing the search input
+import { debounce } from 'lodash'; 
 
 const Collections = () => {
   const { products, search, showSearch } = useContext(ShopContext);

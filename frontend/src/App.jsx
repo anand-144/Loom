@@ -5,9 +5,13 @@ import Exchange from "./pages/Exchange";
 import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const App = () => {
   return (
     <div className='px-4 sm:px-[5%] md:px-[7%] lg:px-[9%]'>
+      <ToastContainer/>
       <Navbar />
       <SearchBar />
       <Routes>
