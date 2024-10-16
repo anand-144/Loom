@@ -24,7 +24,7 @@ const CartTotal = () => {
         </div>
         <hr />
         <div className="flex justify-between">
-          <p>Shipping</p>
+          <p>Shipping Fee</p>
           <p>
             {currency} {delivery_fee.toFixed(2)}
           </p>
