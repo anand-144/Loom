@@ -11,3 +11,4 @@ export { default as Login } from './Login';
 export { default as Exchnage } from './Exchange';
 export { default as PrivacyPolicy } from './PrivacyPolicy';
 export { default as DeliveryPartner } from './DeliveryPartner';
+export { default as Team } from './Team';

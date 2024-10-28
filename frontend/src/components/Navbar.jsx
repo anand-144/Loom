@@ -51,7 +51,8 @@ const Navbar = () => {
         <div className="flex items-center gap-6">
           <FiSearch className="w-5 h-5 cursor-pointer" onClick={()=>setShowSearch(true)}/>
 
-          <div className="relative">
+          <div className="relative z-15">
+              <Link to='/login'>
             <div
               className="w-6 h-6 text-sm bg-gray-700 rounded-full flex items-center justify-center text-white cursor-pointer"
               onClick={() => setDropdownVisible(!dropdownVisible)}
@@ -59,6 +60,7 @@ const Navbar = () => {
             >
               {getInitials(user.firstName, user.lastName)}
             </div>
+              </Link>
             {dropdownVisible && (
               <div className="absolute right-0 pt-4">
                 <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded-lg">

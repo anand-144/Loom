@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import RelatedProduct from "../components/RelatedProduct";
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency,addToCart } = useContext(ShopContext);
+  const { products, currency, addToCart } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
-  const [rating, setRating] = useState(0); // State for selected rating
-  const [hover, setHover] = useState(null); // State for hovered star
-  const [size, setSize] = useState(''); // State for selected size
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(null);
+  const [size, setSize] = useState(''); 
 
   useEffect(() => {
     if (products.length > 0) {
@@ -110,11 +110,23 @@ const Product = () => {
                 </button>
               ))}
             </div>
+
+            {/* Size Chart Button */}
+            <div className="mt-4">
+  <Link
+    to={`/size-chart/${productData.category.toLowerCase()}`}
+    className="text-blue-500 underline hover:text-blue-700 transition-colors"
+  >
+    View Size Chart
+  </Link>
+</div>
+
           </div>
 
+
           <button
-          onClick={()=>addToCart(productData._id,size)}
-          className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700">
+            onClick={() => addToCart(productData._id, size)}
+            className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700">
             ADD TO CART
           </button>
 
