@@ -7,11 +7,16 @@ import { useContext, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 
 const Navbar = () => {
-  const user = { firstName: 'John', lastName: 'Doe' };
+  const user = { name: 'JohnDoe' };
 
-  const getInitials = (firstName, lastName) => {
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`;
+  const getInitials = (name) => {
+    const names = name.split(' ');
+    return names.map(n => n.charAt(0)).join(''); // Get initials from each part of the name
   };
+  
+  
+  console.log(getInitials(user.name));
+  
 
   const [visible, setVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -53,13 +58,13 @@ const Navbar = () => {
 
           <div className="relative z-15">
               <Link to='/login'>
-            <div
-              className="w-6 h-6 text-sm bg-gray-700 rounded-full flex items-center justify-center text-white cursor-pointer"
-              onClick={() => setDropdownVisible(!dropdownVisible)}
-              aria-label="User menu"
-            >
-              {getInitials(user.firstName, user.lastName)}
-            </div>
+              <div
+  className="w-6 h-6 text-sm bg-gray-700 rounded-full flex items-center justify-center text-white cursor-pointer"
+  onClick={() => setDropdownVisible(!dropdownVisible)}
+  aria-label="User menu"
+>
+  {getInitials(user.name)}
+</div>
               </Link>
             {dropdownVisible && (
               <div className="absolute right-0 pt-4">
