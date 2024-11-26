@@ -5,78 +5,128 @@ import jwt from "jsonwebtoken";
 
 // Function to create JWT token
 const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 // Route for user login
 const loginUser = async (req, res) => {
-   try {
+  try {
+    const { identifier, password } = req.body; // identifier can be email or contact
+    let user;
 
-    const {email,password} = req.body;
+    // Check if the identifier is an email or contact
+    if (validator.isEmail(identifier)) {
+      user = await userModel.findOne({ email: identifier });
+    } else if (validator.isMobilePhone(identifier, "any")) {
+      user = await userModel.findOne({ contact: identifier });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email or contact",
+      });
+    }
 
-    const user = await userModel.findOne({email});
-    
     if (!user) {
-        return res.json({success:false, message:"User doesn't exists"})
+      return res.status(404).json({
+        success: false,
+        message: "User doesn't exist",
+      });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
-        const token = createToken(user._id)
-        res.json({success:true,token})
+      const token = createToken(user._id);
+      return res.status(200).json({
+        success: true,
+        token,
+        user: { name: user.name, email: user.email, contact: user.contact },
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
-
-    else {
-        res.json({success:false, message: "Invalid Credentail"})
-    }
-
-   } catch (error) {
-    console.error('Error during registration:', error);
-    res.json({ success: false, message: "Error registering user", error: error.message });
-   }
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error during login",
+      error: error.message,
+    });
+  }
 };
 
 // Route for user registration
 const registerUser = async (req, res) => {
-    try {
-        console.log('Received registration request:', req.body);
-        const { name, email, password } = req.body;
+  try {
+    const { name, email, contact, password } = req.body;
 
-        console.log('Checking if user exists...');
-        const exists = await userModel.findOne({ email });
-        console.log('User check complete:', exists);
+    // Check if user exists by email or contact
+    const emailExists = await userModel.findOne({ email });
+    const contactExists = await userModel.findOne({ contact });
 
-        if (exists) {
-            return res.json({ success: false, message: "User already exists" });
-        }
-
-        if (!validator.isEmail(email)) {
-            return res.json({ success: false, message: "Please enter a valid email" });
-        }
-        if (password.length < 8) {
-            return res.json({ success: false, message: "Please enter a strong password" });
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const newUser = new userModel({ name, email, password: hashedPassword });
-        const user = await newUser.save();
-
-        const token = createToken(user._id);
-        res.json({ success: true, token });
-
-    } catch (error) {
-        console.error('Error during registration:', error);
-        res.json({ success: false, message: "Error registering user", error: error.message });
+    if (emailExists || contactExists) {
+      return res.status(400).json({
+        success: false,
+        message: "User with this email or contact already exists",
+      });
     }
+
+    // Validate email and contact
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format",
+      });
+    }
+    if (!validator.isMobilePhone(contact, "any")) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid contact number format",
+      });
+    }
+
+    // Validate password
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long",
+      });
+    }
+
+    // Hash password and save user
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = new userModel({
+      name,
+      email,
+      contact,
+      password: hashedPassword,
+    });
+    const user = await newUser.save();
+
+    const token = createToken(user._id);
+    return res.status(201).json({
+      success: true,
+      token,
+      user: { name: user.name, email: user.email, contact: user.contact },
+    });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error registering user",
+      error: error.message,
+    });
+  }
 };
 
 // Route for admin login
 const adminLogin = async (req, res) => {
-    // Admin login logic here
-    res.json({ message: "Admin Login API Working" });
+  res.status(200).json({ message: "Admin Login API Working" });
 };
 
 // Exporting functions

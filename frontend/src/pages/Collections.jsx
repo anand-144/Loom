@@ -14,7 +14,7 @@ const Collections = () => {
   const [subCategory, setSubCategory] = useState([]);
 
   const [sortType, setSortType] = useState('relevant');
-  const [debouncedSearch, setDebouncedSearch] = useState(''); // Store debounced search value
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   // Toggle Category Filter
   const toggleCategory = (e) => {
