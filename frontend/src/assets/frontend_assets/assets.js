@@ -56,6 +56,7 @@ import cross_icon from './cross_icon.png'
 import Hero_Men from './Hero_Men.jpg'
 import Girl_Hero from './Girl_Hero.jpg'
 
+
 export const assets = {
     logo,
     hero_img,
