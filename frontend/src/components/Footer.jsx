@@ -1,6 +1,7 @@
 import React from 'react';
 import { assets } from '../assets/frontend_assets/assets';
 import { Link } from 'react-router-dom';
+import { FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -40,6 +41,27 @@ const Footer = () => {
             </a>
           </li>
         </ul>
+        <div className="flex gap-4 mt-5 text-2xl text-gray-600">
+          {/* Instagram Icon */}
+          <a
+            href="https://www.instagram.com/_anand.402/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-pointer hover:text-pink-500 transition duration-300"
+          >
+            <FaInstagram />
+          </a>
+
+          {/* WhatsApp Icon */}
+          <a
+            href="https://wa.me/8424861660"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-pointer hover:text-green-500 transition duration-300"
+          >
+            <FaWhatsapp />
+          </a>
+        </div>
       </address>
 
       {/* Footer Bottom Section */}

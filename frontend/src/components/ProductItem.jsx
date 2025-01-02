@@ -12,13 +12,14 @@ const ProductItem = ({ id, image, name, price }) => {
         to={`/product/${id}`}
       >
         {/* Image Container */}
-        <div className="overflow-hidden rounded-lg">
+        <div className="overflow-hidden rounded-lg sm:h-60 md:h-72 lg:h-80 xl:h-30">
           <img
-            className="hover:scale-110 transition-transform duration-500 ease-in-out object-cover w-full"
+            className="hover:scale-110 transition-transform duration-500 ease-in-out object-cover w-full h-full"
             src={image[0]}
             alt={name}
           />
         </div>
+
         {/* Product Info */}
         <p className="pt-3 pb-1 text-sm">{name}</p>
         <p className="text-sm font-medium">

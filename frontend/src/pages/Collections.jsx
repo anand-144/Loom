@@ -73,7 +73,7 @@ const Collections = () => {
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, debouncedSearch, showSearch, bestseller]);
+  }, [category, subCategory, debouncedSearch, showSearch, bestseller,products]);
 
   const sortProducts = () => {
     let fpCopy = filterProducts.slice();
@@ -190,7 +190,7 @@ const Collections = () => {
 
         {/* Product Grid */}
         {visibleProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 gap-y-6">
             {visibleProducts.map((item, index) => (
               <ProductItem
                 key={index}

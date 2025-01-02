@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import SizeChart from "./components/SizeChart";
 
+
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

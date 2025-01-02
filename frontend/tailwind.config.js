@@ -18,6 +18,9 @@ export default {
       animation: {
         scroll: 'scroll 10s linear infinite', // Smooth scrolling animation
       },
+      transitionDuration: {
+        '2000': '2000ms',
+      },
     },
   },
   plugins: [],

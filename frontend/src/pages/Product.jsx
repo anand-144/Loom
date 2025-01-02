@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState, useMemo } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import RelatedProduct from "../components/RelatedProduct";
+
 
 const Product = () => {
   const { productId } = useParams();
@@ -11,7 +12,7 @@ const Product = () => {
   const [image, setImage] = useState('');
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(null);
-  const [size, setSize] = useState(''); 
+  const [size, setSize] = useState('');
 
   useEffect(() => {
     if (products.length > 0) {
@@ -113,13 +114,13 @@ const Product = () => {
 
             {/* Size Chart Button */}
             <div className="mt-4">
-  <Link
-    to={`/size-chart/${productData.category.toLowerCase()}`}
-    className="text-blue-500 underline hover:text-blue-700 transition-colors"
-  >
-    View Size Chart
-  </Link>
-</div>
+              <Link
+                to={`/size-chart/${productData.category.toLowerCase()}`}
+                className="text-blue-500 underline hover:text-blue-700 transition-colors"
+              >
+                View Size Chart
+              </Link>
+            </div>
 
           </div>
 
@@ -136,6 +137,37 @@ const Product = () => {
             <p>Cash on Delivery is available.</p>
             <p>Easy return and exchange policy within 7 days.</p>
           </div>
+
+          <div className="mt-8">
+            <p className="text-lg font-bold flex items-center">
+              PRODUCT DETAILS
+              <span className="ml-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </span>
+            </p>
+            <p className="mt-4 text-gray-700 md:w-4/5 leading-relaxed">
+              {productData.subDescription}
+            </p>
+            <p className="mt-5 font-bold">Material & Care</p>
+            <p className="mt-2 text-gray-700">{productData.material}</p>
+            <p className="text-gray-700">{productData.care}</p>
+          </div>
+
+
+
         </div>
       </div>
 
@@ -149,9 +181,20 @@ const Product = () => {
         </div>
 
         <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500">
-          <p className="font-medium text-lg">{productData.name}</p>
-          <p>{productData.bigDescription}</p>
-        </div>
+  <p className="font-medium text-lg">
+    {productData.subDescription
+      ? productData.subDescription.split('.').map((sentence, index) => (
+          <React.Fragment key={index}>
+            {sentence.trim()}
+            {sentence && '.'}
+            <br />
+          </React.Fragment>
+        ))
+      : "No description available"}
+  </p>
+</div>
+
+
       </div>
 
       {/* Related Products Section */}

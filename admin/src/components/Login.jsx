@@ -15,7 +15,6 @@ const Login = ({setToken}) => {
     try {
       e.preventDefault();
       const response = await axios.post(backendUrl + '/api/user/admin/login/', { email, password });
-      console.log(response);
   
       if (response.data.success) {
         setToken(response.data.token);

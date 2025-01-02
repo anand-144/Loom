@@ -3,11 +3,12 @@ import productModel from "../models/productModel.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const { name, description, price, category, subCategory, sizes, bestseller } = req.body;
+    const { name, subDescription , description , material , care, price, category, subCategory, sizes, bestseller } = req.body;
 
-    if (!name || !description || !price || !category || !subCategory) {
+    if (!name || !subDescription || !description || !material || !care || !price || !category || !subCategory) {
       return res.status(400).json({ success: false, message: "Required fields are missing" });
     }
+    
 
     console.log("Uploaded files:", req.files);
 
@@ -36,6 +37,9 @@ export const addProduct = async (req, res) => {
     const productData = {
       name,
       description,
+      subDescription,
+      material,
+      care,
       price: Number(price),
       category,
       subCategory,
