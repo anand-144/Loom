@@ -1,59 +1,76 @@
 import { useContext, useEffect, useState } from "react";
+import axios from "axios"; // ✅ Added missing import
 import { ShopContext } from "../context/ShopContext";
 import Title from '../components/Title';
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import CartTotal from "../components/CartTotal";
 
 const Cart = () => {
-  const { products, currency, cartItems, updateCartItemQuantity, navigate } = useContext(ShopContext);
+  const { products, currency, cartItems, updateCartItemQuantity, setCartItems, navigate, backendUrl, token } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
-    const tempData = [];
-    for (const items in cartItems) {
-      for (const item in cartItems[items]) {
-        if (cartItems[items][item] > 0) {
-          tempData.push({
-            _id: items,
-            size: item,
-            quantity: cartItems[items][item]
-          });
+
+    if (products.length > 0) {
+      const tempData = [];
+      for (const productId in cartItems) {
+        for (const size in cartItems[productId]) {
+          if (cartItems[productId][size] > 0) {
+            tempData.push({
+              _id: productId,
+              size: size,
+              quantity: cartItems[productId][size]
+            });
+          }
         }
       }
+      setCartData(tempData);
     }
-    setCartData(tempData);
-  }, [cartItems]);
 
-  const handleQuantityChange = (e, itemId, size) => {
-    const newQuantity = parseInt(e.target.value);
 
-    // Only update if the value is a valid number and greater than 0
+  }, [cartItems, products]);
+
+  const handleQuantityChange = async (e, itemId, size) => {
+    const newQuantity = parseInt(e.target.value, 10);
+
     if (!isNaN(newQuantity) && newQuantity > 0) {
-      updateCartItemQuantity(itemId, size, newQuantity);
+      await updateCartItemQuantity(itemId, size, newQuantity);
+
+      // Fetch updated cart data
+      try {
+        const response = await axios.post(`${backendUrl}/api/cart/get`, {}, { headers: { token } });
+        if (response.data.success) {
+          setCartItems(response.data.cartData); // ✅ Ensure `setCartItems` is available in `ShopContext`
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch updated cart data.");
+      }
     }
   };
 
   return (
     <div className="border-t pt-14">
       <div className="text-2xl mb-3">
-        <Title text1={"YOUR"} text2={"CART"} />
+        <Title text1="YOUR" text2="CART" />
       </div>
 
       <div>
         {cartData.map((item, index) => {
           const productData = products.find((product) => product._id === item._id);
+
           return (
             <div
               key={index}
               className="py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4"
             >
               <div className="flex flex-col sm:flex-row items-start gap-6">
-                <img src={productData.image[0]} alt="product" className="w-16 sm:w-20" />
+                <img src={productData?.image?.[0] || "/fallback.jpg"} alt="product" className="w-16 sm:w-20" />
                 <div>
-                  <p className="text-sm sm:text-lg font-medium">{productData.name}</p>
+                  <p className="text-sm sm:text-lg font-medium">{productData?.name || "Unknown Product"}</p>
                   <div className="flex flex-wrap items-center gap-3 mt-2">
                     <p className="font-medium">
-                      {currency}{productData.price}
+                      {currency}{productData?.price || "N/A"}
                     </p>
                     <p className="px-4 sm:px-3 sm:py-1 py-2 border rounded bg-gray-100">
                       Size: {item.size}
