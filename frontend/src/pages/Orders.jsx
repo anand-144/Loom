@@ -1,9 +1,43 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
+import { head } from "lodash";
+import axios from "axios";
 
 const Orders = () => {
-  const { products, currency } = useContext(ShopContext);
+  const { backendUrl , token  , currency } = useContext(ShopContext);
+
+  const [orderData, setOrderData] = useState([]);
+
+  const loadOrderData = async () => {
+    try {
+      if(!token) {
+        return null
+      }
+
+      const response = await axios.post(`${backendUrl}/api/order/userOrders`, {} ,{headers: {token}});
+      if (response.data.success) {
+        let allOrdersItems = [];
+        response.data.orders.map((order) => {
+          order.items.map((item) => {
+            item['status'] = order.status;
+            item['payment'] = order.payment;
+            item['paymentMethod'] = order.paymentMethod;
+            item['date'] = order.date;
+            allOrdersItems.push(item);
+          })
+        })
+        setOrderData(allOrdersItems);
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    loadOrderData();
+  },[])
 
   return (
     <div className="border-t pt-16">
@@ -12,7 +46,8 @@ const Orders = () => {
       </div>
 
       <div>
-        {products.slice(1, 4).map((item, index) => (
+        {
+        orderData.map((item, index) => (
           <div
             key={index}
             className="py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"

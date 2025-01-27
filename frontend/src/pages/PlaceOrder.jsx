@@ -3,6 +3,8 @@ import { assets } from "../assets/frontend_assets/assets";
 import CartTotal from "../components/CartTotal";
 import Title from "../components/Title";
 import { ShopContext } from "../context/ShopContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
@@ -17,6 +19,21 @@ const PlaceOrder = () => {
     country: "",
     phone: "",
   });
+  
+  const resetForm = () => {
+    setForm({
+      firstName: "",
+      lastName: "",
+      email: "",
+      street: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      country: "",
+      phone: "",
+    });
+    setMethod("cod");
+  };
 
   const { navigate, backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } =
     useContext(ShopContext);
@@ -48,6 +65,25 @@ const PlaceOrder = () => {
         }
       }
 
+      let orderData  = {
+        address: form,
+        items: orderItems,
+        amount : getCartAmount() + delivery_fee,
+      }
+
+      if (method) {
+        const response = await axios.post(`${backendUrl}/api/order/place`, orderData, { headers: { token } });
+        console.log("Order Response:", response.data);
+        if(response.data.success) {
+          resetForm();
+          setCartItems({});
+          navigate('/orders');
+        }else{
+          toast.error(response.data.message);
+        }
+      }
+
+
 
       console.log("Final Order Items:", orderItems);
     } catch (error) {
@@ -57,20 +93,6 @@ const PlaceOrder = () => {
 
 
 
-  const resetForm = () => {
-    setForm({
-      firstName: "",
-      lastName: "",
-      email: "",
-      street: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      country: "",
-      phone: "",
-    });
-    setMethod("cod");
-  };
 
   const isFormComplete = Object.values(form).every((value) => value.trim() !== "") && method !== "";
 
