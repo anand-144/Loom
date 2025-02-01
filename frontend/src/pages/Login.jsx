@@ -71,7 +71,7 @@ const Login = () => {
             draggable: true,
           });
         } else {
-          toast.success("SignUp successful! Please login to continue.");
+          toast.success("SignUp successful !");
         }
 
         if (data.token) setToken(data.token);

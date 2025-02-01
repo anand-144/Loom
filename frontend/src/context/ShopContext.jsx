@@ -46,7 +46,11 @@ const ShopContextProvider = (props) => {
 
     if (token) {
       try {
-        await axios.post(`${backendUrl}/api/cart/add`, { itemId, size }, { headers: { token } });
+        await axios.post(
+          `${backendUrl}/api/cart/add`,
+          { itemId, size },
+          { headers: { token } }
+        );
       } catch (error) {
         console.error(error);
         toast.error(error.message);
@@ -58,23 +62,23 @@ const ShopContextProvider = (props) => {
     let cartData = { ...cartItems };
 
     if (cartData[itemId] && cartData[itemId][size]) {
-        cartData[itemId][size] = quantity;
-        setCartItems(cartData);
+      cartData[itemId][size] = quantity;
+      setCartItems(cartData);
     }
 
     if (token) {
-        try {
-            await axios.post(`${backendUrl}/api/cart/update`, 
-                { itemId, size, quantity }, 
-                { headers: { token } }
-            );
-        } catch (error) {
-            console.error(error);
-            toast.error(error.message);
-        }
+      try {
+        await axios.post(
+          `${backendUrl}/api/cart/update`,
+          { itemId, size, quantity },
+          { headers: { token } }
+        );
+      } catch (error) {
+        console.error(error);
+        toast.error(error.message);
+      }
     }
-};
-  
+  };
 
   const getCartCount = () => {
     return Object.values(cartItems).reduce((totalCount, sizes) => {
@@ -107,14 +111,16 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  // Updated getUserCart: add a guard to exit early if token is missing
   const getUserCart = async (token) => {
+    if (!token) return;
+
     try {
       const response = await axios.post(
         `${backendUrl}/api/cart/get`,
         {},
         { headers: { token } }
       );
-  
       if (response.data.success) {
         setCartItems(response.data.cartData);
       }
@@ -123,12 +129,14 @@ const ShopContextProvider = (props) => {
       toast.error(error.message);
     }
   };
-  
 
+  // Updated useEffect: call getUserCart only if token exists
   useEffect(() => {
     getProductsData();
-    getUserCart(localStorage.getItem('token'));
-  }, []);
+    if (token) {
+      getUserCart(token);
+    }
+  }, [token]);
 
   const value = {
     products,

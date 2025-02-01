@@ -1,16 +1,26 @@
 import { useContext, useEffect, useState } from "react";
-import axios from "axios"; // ✅ Added missing import
+import axios from "axios";
 import { ShopContext } from "../context/ShopContext";
 import Title from '../components/Title';
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import CartTotal from "../components/CartTotal";
+import { toast } from "react-toastify";
 
 const Cart = () => {
-  const { products, currency, cartItems, updateCartItemQuantity, setCartItems, navigate, backendUrl, token } = useContext(ShopContext);
+  const { 
+    products, 
+    currency, 
+    cartItems, 
+    updateCartItemQuantity, 
+    setCartItems, 
+    navigate, 
+    backendUrl, 
+    token  // <-- token from context to check login status
+  } = useContext(ShopContext);
+  
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
-
     if (products.length > 0) {
       const tempData = [];
       for (const productId in cartItems) {
@@ -26,8 +36,6 @@ const Cart = () => {
       }
       setCartData(tempData);
     }
-
-
   }, [cartItems, products]);
 
   const handleQuantityChange = async (e, itemId, size) => {
@@ -38,15 +46,37 @@ const Cart = () => {
 
       // Fetch updated cart data
       try {
-        const response = await axios.post(`${backendUrl}/api/cart/get`, {}, { headers: { token } });
+        const response = await axios.post(
+          `${backendUrl}/api/cart/get`,
+          {},
+          { headers: { token } }
+        );
         if (response.data.success) {
-          setCartItems(response.data.cartData); // ✅ Ensure `setCartItems` is available in `ShopContext`
+          setCartItems(response.data.cartData); 
         }
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch updated cart data.");
       }
     }
+  };
+
+  const handleCheckout = () => {
+    // Check if the user is logged in by verifying the token
+    if (!token) {
+      toast.error("Please sign up or login first");
+      navigate("/login");
+      return;
+    }
+
+    // Check if the cart is empty
+    if (cartData.length === 0) {
+      toast.error("Your cart is empty. Add something before proceeding!");
+      return;
+    }
+
+    // If logged in and cart is not empty, proceed to checkout
+    navigate('/place-order');
   };
 
   return (
@@ -65,9 +95,15 @@ const Cart = () => {
               className="py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4"
             >
               <div className="flex flex-col sm:flex-row items-start gap-6">
-                <img src={productData?.image?.[0] || "/fallback.jpg"} alt="product" className="w-16 sm:w-20" />
+                <img
+                  src={productData?.image?.[0] || "/fallback.jpg"}
+                  alt="product"
+                  className="w-16 sm:w-20"
+                />
                 <div>
-                  <p className="text-sm sm:text-lg font-medium">{productData?.name || "Unknown Product"}</p>
+                  <p className="text-sm sm:text-lg font-medium">
+                    {productData?.name || "Unknown Product"}
+                  </p>
                   <div className="flex flex-wrap items-center gap-3 mt-2">
                     <p className="font-medium">
                       {currency}{productData?.price || "N/A"}
@@ -102,8 +138,11 @@ const Cart = () => {
           <CartTotal />
           <div className="w-full text-end">
             <button
-              onClick={() => navigate('/place-order')}
-              className="bg-black text-white text-sm my-8 px-8 py-3 hover:bg-gray-800 transition-all duration-200"
+              onClick={handleCheckout}
+              className={`text-sm my-8 px-8 py-3 transition-all duration-200 ${
+                cartData.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-black text-white hover:bg-gray-800"
+              }`}
+              disabled={cartData.length === 0}
             >
               PROCEED TO CHECKOUT
             </button>

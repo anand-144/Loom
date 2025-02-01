@@ -12,7 +12,7 @@ const placeOrder  = async (req, res) => {
             items,
             address,
             amount,
-            PaymentMethod:"COD",
+            paymentMethod:"COD",
             payment:false,
             date:Date.now(),
         }
@@ -44,7 +44,13 @@ const placeOrderRazorpay = async (req, res) => {
 //All Orders data for admin panel
 
 const allOrders = async (req, res) => {
-
+    try {
+        const orders = await orderModel.find({})
+        res.json({success:true, orders}); 
+    } catch (error) {
+        console.log(error);
+        res.json({success:false, message:error.message})
+    }
 }
 
 //All Orders data for frontend
