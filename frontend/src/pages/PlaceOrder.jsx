@@ -6,6 +6,7 @@ import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
   const [form, setForm] = useState({
@@ -42,6 +43,36 @@ const PlaceOrder = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const initPay = (order) => {
+    const options = {
+      key  : import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name:'Order Payment',
+      description : 'Order Payment with razorpay',
+      order_id: order.id,
+      recepit: order.recepit,
+      handler: async (response) => {
+        console.log(response)
+        try {
+
+          const {data} = await axios.post(`${backendUrl}/api/order/verifyRazorpay`, response, { headers: { token } });
+          if (data.success) {
+            navigate('/orders')
+            setCartItems({})
+          }
+        } catch (error) {
+            console.log(error)
+            toast.error(error)
+      }
+    }
+  }
+    const rzp = new window.Razorpay(options)
+    rzp.open()
+  }
+
+
+
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     console.log("Form Submitted!");
@@ -66,30 +97,46 @@ const PlaceOrder = () => {
       }
 
       let orderData  = {
+        userId: token,  // Assuming userId is stored in token
         address: form,
         items: orderItems,
-        amount : getCartAmount() + delivery_fee,
-      }
+        amount: getCartAmount() + delivery_fee,
+      };
+      
 
-      if (method) {
+      if (method === "cod") {
         const response = await axios.post(`${backendUrl}/api/order/place`, orderData, { headers: { token } });
-        console.log("Order Response:", response.data);
-        if(response.data.success) {
+        if (response.data.success) {
           resetForm();
           setCartItems({});
           navigate('/orders');
-        }else{
+        } else {
           toast.error(response.data.message);
         }
+      } else if (method === "razorpay") {
+        const responseRazorpay = await axios.post(
+          `${backendUrl}/api/order/razorpay`, 
+          orderData,  // Fix: Send orderData in POST request body
+          { headers: { token } }
+        );
+        
+        if (responseRazorpay.data.success) {
+          initPay(responseRazorpay.data.order);
+        } else {
+          toast.error(responseRazorpay.data.message);
+        }
       }
-
-
+      
+      
 
       console.log("Final Order Items:", orderItems);
     } catch (error) {
       console.error("Error:", error);
     }
+
   };
+
+  
 
 
 
@@ -204,10 +251,6 @@ const PlaceOrder = () => {
         <div className="mt-12">
           <Title text1={"PAYMENT"} text2={"METHOD"} />
           <div className="flex gap-3 flex-col lg:flex-row">
-            <div onClick={() => setMethod("ccavenu")} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
-              <p className={`min-w-3.5 h-3.5 border rounded-full ${method === "ccavenu" ? "bg-green-500" : ""}`}></p>
-              <img src={assets.ccavenue_logo} alt="" />
-            </div>
             <div onClick={() => setMethod("razorpay")} className="flex items-center gap-3 border p-2 px-3 cursor-pointer">
               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === "razorpay" ? "bg-green-500" : ""}`}></p>
               <img src={assets.razorpay_logo} alt="" />

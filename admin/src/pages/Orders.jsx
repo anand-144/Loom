@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { backendUrl } from '../App';
 import { BsBox, BsPinMap, BsCreditCard2Back, BsCalendar3, BsTelephone, BsEnvelope, BsPerson } from 'react-icons/bs';
+import { toast } from 'react-toastify';
 
 const Orders = ({ token }) => {
   const [orders, setOrders] = useState([]);
@@ -12,12 +13,24 @@ const Orders = ({ token }) => {
     try {
       const response = await axios.post(`${backendUrl}/api/order/list/`, {}, { headers: { token } });
       if (response.data.success) {
-        setOrders(response.data.orders);
+        setOrders(response.data.orders.reverse());
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
   };
+
+  const statusHandler = async (event , orderId) => {
+    try {
+      const response = await axios.post(`${backendUrl}/api/order/status/`, {orderId, status:event.target.value }, { headers: { token } })
+      if (response.data.success) {
+          await fetchAllOrders()
+      }
+    } catch (error) { 
+      console.log(error)
+      toast.error(error.data.message)
+    }
+  }
 
   useEffect(() => {
     fetchAllOrders();
@@ -105,6 +118,15 @@ const Orders = ({ token }) => {
                         <span className="text-sm">
                           {new Date(order.date).toLocaleDateString("en-GB")}
                         </span>
+
+                        <select onChange={(event)=>statusHandler(event, order._id)} value={order.status}>
+                          <option value="Order Placed">Order Placed</option>
+                          <option value="Packing">Packing</option>
+                          <option value="Shipped">Shipped</option>
+                          <option value="Out For delivery">Out For delivery</option>
+                          <option value="Delivered">Delivered</option>
+                        </select>
+
                       </div>
                     </div>
                   </div>

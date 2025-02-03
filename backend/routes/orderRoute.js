@@ -1,5 +1,5 @@
 import express from 'express';
-import { placeOrder, placeOrderCcavenue, placeOrderRazorpay, allOrders, userOrders, updateOrderStatus } from '../controllers/orderController.js';
+import { placeOrder,  placeOrderRazorpay, allOrders, userOrders, updateOrderStatus, verifyRazorpay } from '../controllers/orderController.js';
 import adminAuth from '../middleware/adminAuth.js';
 import authUser from '../middleware/auth.js';
 
@@ -13,10 +13,13 @@ orderRouter.post('/status',adminAuth ,  updateOrderStatus);
 
 //payment feature
 orderRouter.post('/place',authUser,placeOrder);
-orderRouter.post('/avenue',authUser,placeOrderCcavenue);
 orderRouter.post('/razorpay',authUser,placeOrderRazorpay);
 
 //user feature
 orderRouter.post('/userOrders',authUser,userOrders);
+
+//verifyPayment
+
+orderRouter.post('/verifyRazorpay',authUser,verifyRazorpay)
 
 export default orderRouter;
