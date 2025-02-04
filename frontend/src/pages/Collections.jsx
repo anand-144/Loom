@@ -1,19 +1,35 @@
 import { useContext, useEffect, useState } from "react";
-import { ShopContext } from "../context/ShopContext";
+import { debounce } from "lodash";
 import { IoIosArrowDown } from "react-icons/io";
 import ProductItem from "../components/ProductItem";
 import Title from "../components/Title";
-import { debounce } from "lodash";
+import { ShopContext } from "../context/ShopContext";
+
+// Import icons for existing subcategory filters
+// For Shirt
+import { PiShirtFoldedLight, PiShirtFoldedFill } from "react-icons/pi";
+// For T-Shirt
+import { PiTShirtBold, PiTShirtFill } from "react-icons/pi";
+// For Jacket
+import { TbJacket } from "react-icons/tb";
+import { GiSleevelessJacket } from "react-icons/gi";
+// For Polo
+import { LiaTshirtSolid } from "react-icons/lia";
+import { GiPoloShirt } from "react-icons/gi";
+// For Sweatshirt
+import { PiHoodieLight, PiHoodieFill } from "react-icons/pi";
+
+// Import icons for new Bottoms section from react-icons/gi
+
+import { PiPants , PiPantsFill } from "react-icons/pi";
 
 const Collections = () => {
   const { products, search, showSearch } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
-
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [bestseller, setBestSeller] = useState(false);
-
   const [sortType, setSortType] = useState("relevant");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [visibleCount, setVisibleCount] = useState(12); // Number of products to show initially
@@ -21,9 +37,8 @@ const Collections = () => {
   // Toggle Category Filter
   const toggleCategory = (e) => {
     const value = e.target.value;
-
     if (value === "Bestseller") {
-      setBestSeller((prev) => !prev); // Toggle bestseller boolean
+      setBestSeller((prev) => !prev);
     } else {
       if (category.includes(value)) {
         setCategory((prev) => prev.filter((item) => item !== value));
@@ -33,16 +48,18 @@ const Collections = () => {
     }
   };
 
-  // Toggle Subcategory Filter
-  const toggleSubCategory = (e) => {
-    if (subCategory.includes(e.target.value)) {
-      setSubCategory((prev) => prev.filter((item) => item !== e.target.value));
+  // Toggle Subcategory Filter (works for both existing and new types)
+  // Accepts either an event (from checkbox clicks) or a string (from icon clicks)
+  const toggleSubCategory = (input) => {
+    const value = typeof input === "string" ? input : input.target.value;
+    if (subCategory.includes(value)) {
+      setSubCategory((prev) => prev.filter((item) => item !== value));
     } else {
-      setSubCategory((prev) => [...prev, e.target.value]);
+      setSubCategory((prev) => [...prev, value]);
     }
   };
 
-  // Apply Filters
+  // Apply filters to products
   const applyFilter = () => {
     let productsCopy = products.slice();
 
@@ -57,7 +74,9 @@ const Collections = () => {
     }
 
     if (subCategory.length > 0) {
-      productsCopy = productsCopy.filter((item) => subCategory.includes(item.subCategory));
+      productsCopy = productsCopy.filter((item) =>
+        subCategory.includes(item.subCategory)
+      );
     }
 
     if (bestseller) {
@@ -73,20 +92,17 @@ const Collections = () => {
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, debouncedSearch, showSearch, bestseller,products]);
+  }, [category, subCategory, debouncedSearch, showSearch, bestseller, products]);
 
   const sortProducts = () => {
     let fpCopy = filterProducts.slice();
-
     switch (sortType) {
       case "low-high":
         setFilterProducts(fpCopy.sort((a, b) => a.price - b.price));
         break;
-
       case "high-low":
         setFilterProducts(fpCopy.sort((a, b) => b.price - a.price));
         break;
-
       default:
         applyFilter();
         break;
@@ -101,12 +117,11 @@ const Collections = () => {
   useEffect(() => {
     const debounced = debounce(() => setDebouncedSearch(search), 300);
     debounced();
-
     return () => debounced.cancel();
   }, [search]);
 
   const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 4); // Load 4 more products
+    setVisibleCount((prev) => prev + 4);
   };
 
   const visibleProducts = filterProducts.slice(0, visibleCount);
@@ -120,7 +135,9 @@ const Collections = () => {
           className="my-2 text-xl flex items-center cursor-pointer gap-2"
         >
           FILTERS
-          <IoIosArrowDown className={`h-3 sm:hidden ${showFilter ? "rotate-180" : ""}`} />
+          <IoIosArrowDown
+            className={`h-3 sm:hidden ${showFilter ? "rotate-180" : ""}`}
+          />
         </p>
 
         {/* Category Filter */}
@@ -132,18 +149,36 @@ const Collections = () => {
           <p className="mb-3 text-sm font-bold">Category</p>
           <div className="flex flex-col gap-2 text-sm font-medium text-gray-700">
             <p className="flex gap-2">
-              <input type="checkbox" className="w-3" value={"Men"} onChange={toggleCategory} /> Men
+              <input
+                type="checkbox"
+                className="w-3"
+                value={"Men"}
+                onChange={toggleCategory}
+              />{" "}
+              Men
             </p>
             <p className="flex gap-2">
-              <input type="checkbox" className="w-3" value={"Women"} onChange={toggleCategory} /> Women
+              <input
+                type="checkbox"
+                className="w-3"
+                value={"Women"}
+                onChange={toggleCategory}
+              />{" "}
+              Women
             </p>
             <p className="flex gap-2">
-              <input type="checkbox" className="w-3" value={"Bestseller"} onChange={toggleCategory} /> Bestseller
+              <input
+                type="checkbox"
+                className="w-3"
+                value={"Bestseller"}
+                onChange={toggleCategory}
+              />{" "}
+              Bestseller
             </p>
           </div>
         </div>
 
-        {/* Subcategory Filter */}
+        {/* Existing Types Section */}
         <div
           className={`border border-gray-300 pl-5 py-3 my-5 ${
             showFilter ? "" : "hidden"
@@ -151,23 +186,148 @@ const Collections = () => {
         >
           <p className="mb-3 text-sm font-bold">Type</p>
           <div className="flex flex-col gap-2 text-sm font-medium text-gray-700">
-            <p className="flex gap-2">
-              <input
-                type="checkbox"
-                className="w-3"
-                value={"Topwear"}
-                onChange={toggleSubCategory}
-              />{" "}
-              Topwear
+            {/* Shirt */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("Shirt")}
+            >
+              {subCategory.includes("Shirt") ? (
+                <PiShirtFoldedFill className="text-xl" />
+              ) : (
+                <PiShirtFoldedLight className="text-xl" />
+              )}
+              <span>Shirt</span>
             </p>
-            <p className="flex gap-2">
-              <input
-                type="checkbox"
-                className="w-3"
-                value={"Bottomwear"}
-                onChange={toggleSubCategory}
-              />{" "}
-              Bottomwear
+            {/* T-Shirt */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("T-Shirt")}
+            >
+              {subCategory.includes("T-Shirt") ? (
+                <PiTShirtFill className="text-xl" />
+              ) : (
+                <PiTShirtBold className="text-xl" />
+              )}
+              <span>T-Shirt</span>
+            </p>
+            {/* Polo */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("Polos")}
+            >
+              {subCategory.includes("Polos") ? (
+                <GiPoloShirt className="text-xl" />
+              ) : (
+                <LiaTshirtSolid className="text-xl" />
+              )}
+              <span>Polos</span>
+            </p>
+            {/* Sweatshirt */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("Sweatshirts")}
+            >
+              {subCategory.includes("Sweatshirts") ? (
+                <PiHoodieFill className="text-xl" />
+              ) : (
+                <PiHoodieLight className="text-xl" />
+              )}
+              <span>Sweatshirts</span>
+            </p>
+            {/* Jacket */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("Jacket")}
+            >
+              {subCategory.includes("Jacket") ? (
+                <GiSleevelessJacket className="text-xl" />
+              ) : (
+                <TbJacket className="text-xl" />
+              )}
+              <span>Jacket</span>
+            </p>
+          </div>
+        </div>
+
+        {/* New Bottoms Section */}
+        <div
+          className={`border border-gray-300 pl-5 py-3 my-5 ${
+            showFilter ? "" : "hidden"
+          } sm:block rounded-md border-2 border-black`}
+        >
+          <p className="mb-3 text-sm font-bold">Bottoms</p>
+          <div className="flex flex-col gap-2 text-sm font-medium text-gray-700">
+            {/* Jeans */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("Jeans")}
+            >
+              {subCategory.includes("Jeans") ? (
+                <PiPants className="text-xl text-blue-500" />
+              ) : (
+                <PiPants className="text-xl" />
+              )}
+              <span>Jeans</span>
+            </p>
+            {/* Trousers */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("Trousers")}
+            >
+              {subCategory.includes("Trousers") ? (
+                <PiPantsFill className="text-xl text-blue-500" />
+              ) : (
+                <PiPantsFill className="text-xl" />
+              )}
+              <span>Trousers</span>
+            </p>
+            {/* Cargo */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("Cargo")}
+            >
+              {subCategory.includes("Cargo") ? (
+                <PiPants className="text-xl text-blue-500" />
+              ) : (
+                <PiPantsFill className="text-xl" />
+              )}
+              <span>Cargo</span>
+            </p>
+            {/* Joggers */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("Joggers")}
+            >
+              {subCategory.includes("Joggers") ? (
+                <PiPants className="text-xl text-blue-500" />
+              ) : (
+                <PiPantsFill className="text-xl" />
+              )}
+              <span>Joggers</span>
+            </p>
+            {/* TrackPant */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("TrackPant")}
+            >
+              {subCategory.includes("TrackPant") ? (
+                <PiPants className="text-xl text-blue-500" />
+              ) : (
+                <PiPantsFill className="text-xl" />
+              )}
+              <span>TrackPant</span>
+            </p>
+            {/* Shorts */}
+            <p
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={() => toggleSubCategory("Shorts")}
+            >
+              {subCategory.includes("Shorts") ? (
+                <PiPants className="text-xl text-blue-500" />
+              ) : (
+                <PiPantsFill className="text-xl" />
+              )}
+              <span>Shorts</span>
             </p>
           </div>
         </div>

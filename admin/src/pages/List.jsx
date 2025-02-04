@@ -2,19 +2,20 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { backendUrl, currency } from '../App';
 import { toast } from 'react-toastify';
-import { MdCancel } from 'react-icons/md';
+import { MdCancel, MdEdit } from 'react-icons/md';
+import EditProduct from './EditProduct';
 
 const List = ({ token }) => {
   const [list, setList] = useState([]);
   const [modalImages, setModalImages] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
 
   const fetchList = async () => {
     try {
       const response = await axios.get(`${backendUrl}/api/product/list/`);
       if (response.data.success) {
         setList(response.data.products);
-        console.log(response.data);
       } else {
         toast.error(response.data.message);
       }
@@ -54,104 +55,150 @@ const List = ({ token }) => {
     setModalImages([]);
   };
 
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+  };
+
+  const handleCloseEdit = () => {
+    setEditingProduct(null);
+  };
+
   useEffect(() => {
     fetchList();
   }, []);
 
   return (
-    <>
-      <p className="mb-2 text-lg font-semibold">All Products List</p>
-      <div className="flex flex-col gap-2">
-        {/* Table Header */}
-        <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_2fr_1fr_1fr] items-center py-1 px-2 border bg-gray-100 text-sm font-bold">
-          <span>Image</span>
-          <span>Name</span>
-          <span>Category</span>
-          <span>Subcategory</span>
-          <span>Price</span>
-          <span className="text-center">Action</span>
-        </div>
+    <div className="p-4 sm:p-6">
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-800">All Products List</h2>
+      
+      {/* Desktop Header */}
+      <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_2fr_1fr_auto] gap-4 items-center p-3 bg-gray-100 rounded-lg mb-4">
+        <span className="text-sm font-semibold text-gray-600">Image</span>
+        <span className="text-sm font-semibold text-gray-600">Name</span>
+        <span className="text-sm font-semibold text-gray-600">Category</span>
+        <span className="text-sm font-semibold text-gray-600">Subcategory</span>
+        <span className="text-sm font-semibold text-gray-600">Price</span>
+        <span className="text-sm font-semibold text-gray-600 text-center w-24">Actions</span>
+      </div>
 
-        {/* Table Data */}
+      {/* Product List */}
+      <div className="space-y-4">
         {list.length > 0 ? (
-          list.map((item, index) => (
+          list.map((item) => (
             <div
-              className="grid md:grid-cols-[1fr_3fr_1fr_2fr_1fr_1fr] grid-cols-1 gap-2 py-1 px-2 border text-sm rounded-lg"
-              key={item._id || index}
+              key={item._id}
+              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 p-4"
             >
-              {/* Image */}
-              <img
-                className="w-12 h-12 object-cover rounded-md cursor-pointer"
-                src={item.image?.[0] || '/placeholder.png'}
-                alt={item.name || 'Product'}
-                onClick={() => handleImageClick(item.image)}
-              />
+              {/* Mobile Layout */}
+              <div className="md:hidden space-y-3">
+                <div className="flex items-start gap-3">
+                  <img
+                    className="w-20 h-20 object-cover rounded-lg cursor-pointer"
+                    src={item.image?.[0] || '/placeholder.png'}
+                    alt={item.name}
+                    onClick={() => handleImageClick(item.image)}
+                  />
+                  <div className="flex-1">
+                    <h3 className="font-medium text-gray-800">{item.name}</h3>
+                    <p className="text-sm text-gray-500 mt-1">{item.category}</p>
+                    <p className="text-sm text-gray-500">{item.subCategory}</p>
+                    <p className="text-sm font-medium text-gray-800 mt-1">
+                      {currency} {item.price?.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                    title="Edit"
+                  >
+                    <MdEdit className="text-xl" />
+                  </button>
+                  <button
+                    onClick={() => removeProduct(item._id)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                    title="Remove"
+                  >
+                    <MdCancel className="text-xl" />
+                  </button>
+                </div>
+              </div>
 
-              {/* Name */}
-              <p className="truncate">{item.name || 'No Name'}</p>
-
-              {/* Category */}
-              <p>{item.category || 'No Category'}</p>
-
-              {/* Subcategory */}
-              <p
-                className="md:block hidden"
-                title={item.subCategory || 'N/A'}
-              >
-                {item.subCategory || 'N/A'}
-              </p>
-
-              {/* Mobile Tooltip */}
-              <p className="md:hidden truncate" title={item.subCategory || 'N/A'}>
-                {item.subCategory || 'N/A'}
-              </p>
-
-              {/* Price */}
-              <p>
-                {currency} {item.price?.toFixed(2) || '0.00'}
-              </p>
-
-              {/* Action */}
-              <button
-                onClick={() => removeProduct(item._id)}
-                className="text-red-600 flex justify-center items-center cursor-pointer text-xl"
-                aria-label="Cancel"
-                title="Cancel"
-              >
-                <MdCancel />
-              </button>
+              {/* Desktop Layout */}
+              <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_2fr_1fr_auto] gap-4 items-center">
+                <img
+                  className="w-12 h-12 object-cover rounded-lg cursor-pointer"
+                  src={item.image?.[0] || '/placeholder.png'}
+                  alt={item.name}
+                  onClick={() => handleImageClick(item.image)}
+                />
+                <span className="text-sm text-gray-800">{item.name}</span>
+                <span className="text-sm text-gray-600">{item.category}</span>
+                <span className="text-sm text-gray-600">{item.subCategory}</span>
+                <span className="text-sm font-medium text-gray-800">
+                  {currency} {item.price?.toFixed(2)}
+                </span>
+                <div className="flex items-center gap-2 w-24 justify-end">
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                    title="Edit"
+                  >
+                    <MdEdit className="text-xl" />
+                  </button>
+                  <button
+                    onClick={() => removeProduct(item._id)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                    title="Remove"
+                  >
+                    <MdCancel className="text-xl" />
+                  </button>
+                </div>
+              </div>
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500">No products available.</p>
+          <div className="text-center py-8 text-gray-500">No products available.</div>
         )}
       </div>
 
-      {/* Modal for Images */}
+      {/* Image Modal */}
       {showModal && (
-       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-       <div className="bg-white rounded-lg p-4 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl">
-         <button
-           className="ml-auto mb-2 text-gray-500 hover:text-gray-800"
-           onClick={closeModal}
-         >
-           <MdCancel className="text-2xl" />
-         </button>
-         <div className="flex flex-wrap gap-2 overflow-auto">
-           {modalImages.map((img, index) => (
-             <img
-               key={index}
-               className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 object-cover rounded-md"
-               src={img}
-               alt={`Product ${index + 1}`}
-             />
-           ))}
-         </div>
-       </div>
-     </div>
-     
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-4 w-full max-w-4xl">
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={closeModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <MdCancel className="text-2xl" />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[70vh] overflow-y-auto p-2">
+              {modalImages.map((img, index) => (
+                <img
+                  key={index}
+                  className="w-full aspect-square object-cover rounded-lg"
+                  src={img}
+                  alt={`Product ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       )}
-    </>
+
+      {/* Edit Modal */}
+      {editingProduct && (
+        <EditProduct
+          product={editingProduct}
+          onClose={handleCloseEdit}
+          onUpdate={fetchList}
+          token={token}
+        />
+      )}
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { backendUrl } from '../App';
-import { BsBox, BsPinMap, BsCreditCard2Back, BsCalendar3, BsTelephone, BsEnvelope, BsPerson } from 'react-icons/bs';
+import { BsBox, BsPinMap, BsCreditCard2Back, BsCalendar3, BsTelephone, BsEnvelope, BsPerson, BsChevronDown } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 
 const Orders = ({ token }) => {
@@ -20,37 +20,43 @@ const Orders = ({ token }) => {
     }
   };
 
-  const statusHandler = async (event , orderId) => {
+  const statusHandler = async (event, orderId) => {
     try {
-      const response = await axios.post(`${backendUrl}/api/order/status/`, {orderId, status:event.target.value }, { headers: { token } })
+      const response = await axios.post(
+        `${backendUrl}/api/order/status/`, 
+        { orderId, status: event.target.value }, 
+        { headers: { token } }
+      );
       if (response.data.success) {
-          await fetchAllOrders()
+        await fetchAllOrders();
       }
-    } catch (error) { 
-      console.log(error)
-      toast.error(error.data.message)
+    } catch (error) {
+      console.log(error);
+      toast.error(error.data.message);
     }
-  }
+  };
 
   useEffect(() => {
     fetchAllOrders();
   }, [token]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h3 className="text-2xl font-bold mb-8 text-gray-800">My Orders</h3>
-      <div className="grid gap-6">
+    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-gray-800">My Orders</h3>
+      <div className="grid gap-4 sm:gap-6">
         {orders.map((order, index) => (
-          <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-[1.02] duration-300">
-            <div className="p-6">
+          <div key={index} className="bg-white rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="p-4 sm:p-6">
               {/* Order Header */}
-              <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-100">
-                <BsBox className="w-5 h-5 text-indigo-600" />
-                <span className="text-sm text-gray-500">Order ID:</span>
-                <span className="font-medium">{order._id}</span>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <BsBox className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
+                  <span className="text-xs sm:text-sm text-gray-500">Order ID:</span>
+                  <span className="text-xs sm:text-sm font-medium">{order._id}</span>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
                 {/* Product Image */}
                 <div className="lg:col-span-3">
                   <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
@@ -63,14 +69,14 @@ const Orders = ({ token }) => {
                 </div>
 
                 {/* Order Details */}
-                <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="lg:col-span-9 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {/* Items Section */}
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-gray-800">Order Items</h4>
+                  <div className="space-y-3 sm:space-y-4">
+                    <h4 className="text-sm sm:text-base font-semibold text-gray-800">Order Items</h4>
                     <div className="space-y-2">
                       {order.items.map((item, itemIndex) => (
-                        <div key={itemIndex} className="flex items-center gap-2 text-sm">
-                          <div className="w-2 h-2 rounded-full bg-indigo-600"></div>
+                        <div key={itemIndex} className="flex items-center gap-2 text-xs sm:text-sm">
+                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-600"></div>
                           <span className="font-medium">{item.name}</span>
                           <span className="text-gray-500">×{item.quantity}</span>
                           {item.size && (
@@ -82,51 +88,56 @@ const Orders = ({ token }) => {
                   </div>
 
                   {/* Shipping Details */}
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-gray-800">Shipping Details</h4>
-                    <div className="space-y-2 text-sm">
+                  <div className="space-y-3 sm:space-y-4">
+                    <h4 className="text-sm sm:text-base font-semibold text-gray-800">Shipping Details</h4>
+                    <div className="space-y-2 text-xs sm:text-sm">
                       <div className="flex items-center gap-2">
-                        <BsPerson className="w-4 h-4 text-gray-500" />
+                        <BsPerson className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
                         <span>{order.address.firstName} {order.address.lastName}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <BsPinMap className="w-6 h-6 text-gray-500" />
-                        <span>{order.address.street}, {order.address.zipCode}</span>
+                        <BsPinMap className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <span className="line-clamp-1">{order.address.street}, {order.address.zipCode}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <BsTelephone className="w-4 h-4 text-gray-500" />
+                        <BsTelephone className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
                         <span>{order.address.phone}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <BsEnvelope className="w-4 h-4 text-gray-500" />
+                        <BsEnvelope className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
                         <span>{order.address.email}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Payment Info */}
-                  <div className="space-y-4 md:col-span-2">
-                    <div className="flex flex-wrap gap-6">
+                  <div className="space-y-3 sm:space-y-4 sm:col-span-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
                       <div className="flex items-center gap-2">
-                        <BsCreditCard2Back className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm">
+                        <BsCreditCard2Back className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <span className="text-xs sm:text-sm">
                           {order.paymentMethod} · {order.payment ? 'Paid' : 'Pending'}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <BsCalendar3 className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm">
+                        <BsCalendar3 className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <span className="text-xs sm:text-sm">
                           {new Date(order.date).toLocaleDateString("en-GB")}
                         </span>
-
-                        <select onChange={(event)=>statusHandler(event, order._id)} value={order.status}>
+                      </div>
+                      <div className="relative">
+                        <select 
+                          onChange={(event) => statusHandler(event, order._id)} 
+                          value={order.status}
+                          className="appearance-none bg-gray-50 text-xs sm:text-sm rounded-md py-1.5 px-3 pr-8 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        >
                           <option value="Order Placed">Order Placed</option>
                           <option value="Packing">Packing</option>
                           <option value="Shipped">Shipped</option>
-                          <option value="Out For delivery">Out For delivery</option>
+                          <option value="Out For delivery">Out For Delivery</option>
                           <option value="Delivered">Delivered</option>
                         </select>
-
+                        <BsChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                       </div>
                     </div>
                   </div>

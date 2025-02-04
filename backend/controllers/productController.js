@@ -9,7 +9,6 @@ export const addProduct = async (req, res) => {
       return res.status(400).json({ success: false, message: "Required fields are missing" });
     }
     
-
     console.log("Uploaded files:", req.files);
 
     const images = ['image1', 'image2', 'image3', 'image4']
@@ -65,6 +64,46 @@ export const addProduct = async (req, res) => {
   }
 };
 
+// Function for updating a product
+export const updateProduct = async (req, res) => {
+  try {
+    const { id, name, subDescription, description, material, care, price, category, subCategory, bestseller, sizes } = req.body;
+
+    if (!id || !name || !subDescription || !description || !material || !care || !price || !category || !subCategory) {
+      return res.status(400).json({ success: false, message: "Required fields are missing" });
+    }
+
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      {
+        name,
+        subDescription,
+        description,
+        material,
+        care,
+        price: Number(price),
+        category,
+        subCategory,
+        bestseller,
+        sizes,
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Product updated successfully!",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    console.error("Error in updateProduct:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 // Function for listing products
 export const listProduct = async (req, res) => {
@@ -80,30 +119,24 @@ export const listProduct = async (req, res) => {
 // Function for removing a product
 export const removeProduct = async (req, res) => {
   try {
-
     await productModel.findByIdAndDelete(req.body.id);
-    res.json({success:true, message: "Prodcut Removed"
-    })
-
+    res.json({success:true, message: "Product Removed"})
   } catch (error) {
     console.log(error)
     res.json({success:false , message: error.message})
   }
- 
 };
 
 // Function for fetching a single product
 export const singleProduct = async (req, res) => {
-try {
-    
-  const { productId } = req.body
+  try {
+    const { productId } = req.body
     const product = await productModel.findById(productId) 
     res.json({success:true , product})
-
-} catch (error) {
-  console.log(error)
-  res.json({success:false , message: error.message})
-}
+  } catch (error) {
+    console.log(error)
+    res.json({success:false , message: error.message})
+  }
 };
 
-export default { listProduct, addProduct, removeProduct, singleProduct };
+export default { listProduct, addProduct, removeProduct, singleProduct, updateProduct };

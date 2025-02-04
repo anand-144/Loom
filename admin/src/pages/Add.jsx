@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import axios from 'axios';
 import { backendUrl } from '../App';
@@ -17,7 +17,7 @@ const Add = ({ token }) => {
   const [care, setCare] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('Men');
-  const [subCategory, setSubCategory] = useState('Topwear');
+  const [subCategory, setSubCategory] = useState('Shirt');
   const [sizes, setSizes] = useState([]);
   const [bestseller, setBestseller] = useState(false);
 
@@ -66,7 +66,7 @@ const Add = ({ token }) => {
         setSizes([]);
         setBestseller(false);
       } else {
-         toast.error('😣' + response.data.message);
+        toast.error('😣' + response.data.message);
       }
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
@@ -121,63 +121,63 @@ const Add = ({ token }) => {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:space-x-8">
-  {/* Product Description */}
-  <div className="w-full lg:w-1/2">
-    <p className="mb-2 text-lg font-medium text-gray-700">Product Description</p>
-    <textarea
-      className="w-full px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
-      placeholder="Write Cloth Description"
-      required
-      rows="5"
-      onChange={(e) => setDescription(e.target.value)}
-      value={description}
-    ></textarea>
-  </div>
+        {/* Product Description */}
+        <div className="w-full lg:w-1/2">
+          <p className="mb-2 text-lg font-medium text-gray-700">Product Description</p>
+          <textarea
+            className="w-full px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            placeholder="Write Cloth Description"
+            required
+            rows="5"
+            onChange={(e) => setDescription(e.target.value)}
+            value={description}
+          ></textarea>
+        </div>
 
-  {/* Product Details */}
-  <div className="w-full lg:w-1/2 mt-5 lg:mt-0">
-    <p className="mb-2 text-lg font-medium text-gray-700">Product Details</p>
-    <input
-   className="w-full max-w-md px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
-   type="text"
-   placeholder="Type here"
-   required
-   onChange={(e) => setSubDescription(e.target.value)}
-   value={subDescription}
-    ></input>
+        {/* Product Details */}
+        <div className="w-full lg:w-1/2 mt-5 lg:mt-0">
+          <p className="mb-2 text-lg font-medium text-gray-700">Product Details</p>
+          <input
+            className="w-full max-w-md px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            type="text"
+            placeholder="Type here"
+            required
+            onChange={(e) => setSubDescription(e.target.value)}
+            value={subDescription}
+          ></input>
 
-<p className="mt-4 mb-2 text-lg font-medium text-gray-700">Product material</p>
-    <input
-      className="w-full lg:w-auto max-w-md px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
-      type="text"
-      placeholder="Type here"
-      required
-      onChange={(e) => setMaterial(e.target.value)}
-      value={material}
-    />
-  </div>
+          <p className="mt-4 mb-2 text-lg font-medium text-gray-700">Product material</p>
+          <input
+            className="w-full lg:w-auto max-w-md px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            type="text"
+            placeholder="Type here"
+            required
+            onChange={(e) => setMaterial(e.target.value)}
+            value={material}
+          />
+        </div>
 
-  {/* Product Care */}
-  <div className="w-full lg:w-1/2 mt-4 lg:mt-0">
-    <p className="mb-2 text-lg font-medium text-gray-700">
-      Product Care { "(Washing Type)" }
-    </p>
-    <input
-      className="w-full lg:w-auto max-w-md px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
-      type="text"
-      placeholder="Type here"
-      required
-      onChange={(e) => setCare(e.target.value)}
-      value={care}
-    />
-  </div>
-</div>
+        {/* Product Care */}
+        <div className="w-full lg:w-1/2 mt-4 lg:mt-0">
+          <p className="mb-2 text-lg font-medium text-gray-700">
+            Product Care {"(Washing Type)"}
+          </p>
+          <input
+            className="w-full lg:w-auto max-w-md px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            type="text"
+            placeholder="Type here"
+            required
+            onChange={(e) => setCare(e.target.value)}
+            value={care}
+          />
+        </div>
+      </div>
 
 
-     
-     
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+
+
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
         <div>
           <p className="mb-2 text-lg font-medium text-gray-700">Product Category</p>
           <select
@@ -191,21 +191,41 @@ const Add = ({ token }) => {
         </div>
 
         <div>
-          <p className="mb-2 text-lg font-medium text-gray-700">Product Subcategory</p>
+          <p className="mb-2 text-lg font-medium text-gray-700">Product Top</p>
           <select
             className="w-max px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
             required
             onChange={(e) => setSubCategory(e.target.value)}
           >
-            <option value="Topwear">Topwear</option>
-            <option value="Bottomwear">Bottomwear</option>
+            <option value="Shirt">Shirt</option>
+            <option value="T-Shirt">T-Shirt</option>
+            <option value="Polos">Polos</option>
+            <option value="Sweatshirts">Sweatshirts</option>
+            <option value="Jacket">Jacket</option>
           </select>
         </div>
 
         <div>
+          <p className="mb-2 text-lg font-medium text-gray-700">Product Bottom</p>
+          <select
+            className="w-max px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            required
+            onChange={(e) => setSubCategory(e.target.value)}
+          >
+            <option value="Jeans">Jeans</option>
+            <option value="Trousers">Trousers</option>
+            <option value="Cargo">Cargo</option>
+            <option value="Joggers">Joggers</option>
+            <option value="TrackPant">TrackPant</option>
+            <option value="Shorts">Shorts</option>
+          </select>
+        </div>
+
+
+        <div>
           <p className="mb-2 text-lg font-medium text-gray-700">Product Price</p>
           <input
-            className="w-full px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            className="w-32 px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
             type="number"
             placeholder="25"
             required
@@ -213,6 +233,7 @@ const Add = ({ token }) => {
             value={price}
           />
         </div>
+
       </div>
 
       <div>
@@ -228,9 +249,8 @@ const Add = ({ token }) => {
               }
             >
               <p
-                className={`${
-                  sizes.includes(size) ? 'bg-pink-100' : 'bg-slate-200'
-                } px-3 py-1 cursor-pointer`}
+                className={`${sizes.includes(size) ? 'bg-pink-100' : 'bg-slate-200'
+                  } px-3 py-1 cursor-pointer`}
               >
                 {size}
               </p>
