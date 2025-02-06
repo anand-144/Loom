@@ -20,7 +20,11 @@ const EditProduct = ({ product, onClose, onUpdate, token }) => {
 
     // Example arrays for dropdown options
     const categories = ['Men', 'Women', 'Bestseller'];
-    const subCategories = ['Shirt', 'T-Shirt', 'Polos', 'Sweatshirts', 'Jacket', '' ,'Jeans', 'Trousers', 'Cargo', 'Joggers', 'TrackPant', 'Shorts'];
+    const subCategories = ['Shirt', 'T-Shirt', 'Polos', 'Sweatshirts', 'Jacket', '', 'Jeans', 'Trousers', 'Cargo', 'Joggers', 'TrackPant', 'Shorts'];
+
+    // Define available sizes for topwear and bottomwear
+    const topSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const bottomSizes = [28, 30, 32, 34, 36, 38, 40, 42, 44];
 
     useEffect(() => {
         if (product) {
@@ -47,6 +51,7 @@ const EditProduct = ({ product, onClose, onUpdate, token }) => {
         }));
     };
 
+    // This function handles the checkbox changes for both top and bottom sizes.
     const handleSizeChange = (e) => {
         const value = e.target.value;
         const isChecked = e.target.checked;
@@ -84,8 +89,6 @@ const EditProduct = ({ product, onClose, onUpdate, token }) => {
             toast.error('Failed to update product');
         }
     };
-
-    const availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -234,18 +237,38 @@ const EditProduct = ({ product, onClose, onUpdate, token }) => {
                         </div>
 
                         {/* Sizes and Bestseller */}
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Available Sizes
+                                    Available Topwear Sizes
                                 </label>
                                 <div className="flex flex-wrap gap-4">
-                                    {availableSizes.map((size) => (
+                                    {topSizes.map((size) => (
                                         <label key={size} className="flex items-center space-x-2">
                                             <input
                                                 type="checkbox"
                                                 value={size}
                                                 checked={formData.sizes.includes(size)}
+                                                onChange={handleSizeChange}
+                                                className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                            />
+                                            <span className="text-sm text-gray-700">{size}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Available Bottomwear Sizes
+                                </label>
+                                <div className="flex flex-wrap gap-4">
+                                    {bottomSizes.map((size) => (
+                                        <label key={size} className="flex items-center space-x-2">
+                                            <input
+                                                type="checkbox"
+                                                value={size}
+                                                checked={formData.sizes.includes(String(size)) || formData.sizes.includes(size)} 
                                                 onChange={handleSizeChange}
                                                 className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                             />

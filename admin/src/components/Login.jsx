@@ -1,35 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { assets } from '../assets/admin_assets/assets';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import axios from 'axios';
 import { backendUrl } from '../App';
 import { toast } from 'react-toastify';
-import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import CryptoJS from 'crypto-js';
 
-const Login = ({setToken}) => {
+const SECRET_KEY = 'your_secret_key'; // Use a strong secret key
+
+const Login = ({ setToken }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('rememberedEmail');
+    const storedPassword = localStorage.getItem('rememberedPassword');
+
+    if (storedEmail && storedPassword) {
+      setEmail(storedEmail);
+      const decryptedPassword = CryptoJS.AES.decrypt(storedPassword, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+      setPassword(decryptedPassword);
+      setRememberMe(true);
+    }
+  }, []);
 
   const onSubmitHandler = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
       const response = await axios.post(backendUrl + '/api/user/admin/login/', { email, password });
-  
+      
       if (response.data.success) {
         setToken(response.data.token);
         toast.success('🎉 Login successful!', {
-          icon: <FaCheckCircle style={{ color: 'green' }} />, 
+          icon: <FaCheckCircle style={{ color: 'green' }} />,
         });
+
+        if (rememberMe) {
+          localStorage.setItem('rememberedEmail', email);
+          const encryptedPassword = CryptoJS.AES.encrypt(password, SECRET_KEY).toString();
+          localStorage.setItem('rememberedPassword', encryptedPassword);
+        } else {
+          localStorage.removeItem('rememberedEmail');
+          localStorage.removeItem('rememberedPassword');
+        }
       } else {
-        toast.error("Enter Credintal's Properly 😣" , {
-          icon: <FaExclamationCircle style={{ color: '#fa2a55' }} />, 
+        toast.error("Enter Credentials Properly 😣", {
+          icon: <FaExclamationCircle style={{ color: '#fa2a55' }} />,
         });
       }
     } catch (error) {
       console.error(error);
-      toast.error("Enter Credintal's Properly 😣", {
-        icon: <FaExclamationCircle style={{ color: '#fa2a55' }} />, 
+      toast.error("Enter Credentials Properly 😣", {
+        icon: <FaExclamationCircle style={{ color: '#fa2a55' }} />,
       });
     }
   };
@@ -73,6 +97,17 @@ const Login = ({setToken}) => {
                 {showPassword ? <FaEyeSlash className="text-lg" /> : <FaEye className="text-lg" />}
               </button>
             </div>
+          </div>
+
+          <div className="mb-4 flex items-center">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={() => setRememberMe(!rememberMe)}
+              className="mr-2 cursor-pointer"
+            />
+            <label htmlFor="rememberMe" className="text-sm text-gray-700 cursor-pointer">Remember Me</label>
           </div>
 
           <button

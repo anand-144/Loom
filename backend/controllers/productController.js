@@ -3,7 +3,7 @@ import productModel from "../models/productModel.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const { name, subDescription , description , material , care, price, category, subCategory, sizes, bestseller } = req.body;
+    const { name, subDescription, description, material, care, price, category, subCategory, sizes, bestseller } = req.body;
 
     if (!name || !subDescription || !description || !material || !care || !price || !category || !subCategory) {
       return res.status(400).json({ success: false, message: "Required fields are missing" });
@@ -11,7 +11,7 @@ export const addProduct = async (req, res) => {
     
     console.log("Uploaded files:", req.files);
 
-    const images = ['image1', 'image2', 'image3', 'image4']
+    const images = ['image1', 'image2', 'image3', 'image4' ,'image5']
       .map((key) => req.files[key]?.[0])
       .filter((file) => file?.path);
 
@@ -73,6 +73,13 @@ export const updateProduct = async (req, res) => {
       return res.status(400).json({ success: false, message: "Required fields are missing" });
     }
 
+    let parsedSizes = [];
+    try {
+      parsedSizes = Array.isArray(sizes) ? sizes : JSON.parse(sizes || "[]");
+    } catch (error) {
+      return res.status(400).json({ success: false, message: "Invalid sizes format" });
+    }
+
     const updatedProduct = await productModel.findByIdAndUpdate(
       id,
       {
@@ -84,8 +91,8 @@ export const updateProduct = async (req, res) => {
         price: Number(price),
         category,
         subCategory,
-        bestseller,
-        sizes,
+        bestseller: bestseller === "true" || bestseller === true,
+        sizes: parsedSizes,
       },
       { new: true }
     );
@@ -109,10 +116,10 @@ export const updateProduct = async (req, res) => {
 export const listProduct = async (req, res) => {
   try {
       const products = await productModel.find({});
-      res.json({success:true,products})
+      res.json({ success: true, products });
   } catch (error) {
-    console.log(error)
-    res.json({success:false , message: error.message})
+    console.log(error);
+    res.json({ success: false, message: error.message });
   }
 };
 
@@ -120,22 +127,22 @@ export const listProduct = async (req, res) => {
 export const removeProduct = async (req, res) => {
   try {
     await productModel.findByIdAndDelete(req.body.id);
-    res.json({success:true, message: "Product Removed"})
+    res.json({ success: true, message: "Product Removed" });
   } catch (error) {
-    console.log(error)
-    res.json({success:false , message: error.message})
+    console.log(error);
+    res.json({ success: false, message: error.message });
   }
 };
 
 // Function for fetching a single product
 export const singleProduct = async (req, res) => {
   try {
-    const { productId } = req.body
-    const product = await productModel.findById(productId) 
-    res.json({success:true , product})
+    const { productId } = req.body;
+    const product = await productModel.findById(productId);
+    res.json({ success: true, product });
   } catch (error) {
-    console.log(error)
-    res.json({success:false , message: error.message})
+    console.log(error);
+    res.json({ success: false, message: error.message });
   }
 };
 

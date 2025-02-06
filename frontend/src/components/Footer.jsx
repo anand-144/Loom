@@ -9,7 +9,7 @@ const Footer = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowTopButton(window.scrollY > 300); // Show button after scrolling down 300px
+      setShowTopButton(window.scrollY > 300);
     };
 
     window.addEventListener('scroll', handleScroll);

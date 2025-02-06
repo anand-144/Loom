@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import axios from 'axios';
 import { backendUrl } from '../App';
 import { toast } from 'react-toastify';
 
 const Add = ({ token }) => {
+  // Image states
   const [image1, setImage1] = useState(false);
   const [image2, setImage2] = useState(false);
   const [image3, setImage3] = useState(false);
   const [image4, setImage4] = useState(false);
+  const [image5, setImage5] = useState(false);
 
+  // Product info states
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [subDescription, setSubDescription] = useState('');
@@ -17,7 +20,13 @@ const Add = ({ token }) => {
   const [care, setCare] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('Men');
-  const [subCategory, setSubCategory] = useState('Shirt');
+
+  // New state: Product Type & Subcategory
+  // productType can be "topwear" or "bottomwear"
+  const [productType, setProductType] = useState("topwear");
+  // For topwear default subCategory is "Shirt" and for bottomwear it's "Jeans"
+  const [subCategory, setSubCategory] = useState("Shirt");
+
   const [sizes, setSizes] = useState([]);
   const [bestseller, setBestseller] = useState(false);
 
@@ -46,6 +55,7 @@ const Add = ({ token }) => {
       if (image2) formData.append('image2', image2);
       if (image3) formData.append('image3', image3);
       if (image4) formData.append('image4', image4);
+      if (image5) formData.append('image5', image5);  {/* Corrected key */}
 
       const response = await axios.post(backendUrl + '/api/product/add/', formData, {
         headers: { token },
@@ -62,9 +72,13 @@ const Add = ({ token }) => {
         setImage2(false);
         setImage3(false);
         setImage4(false);
+        setImage5(false);
         setPrice('');
         setSizes([]);
         setBestseller(false);
+        // Reset product type to default topwear and subCategory to "Shirt"
+        setProductType("topwear");
+        setSubCategory("Shirt");
       } else {
         toast.error('😣' + response.data.message);
       }
@@ -79,7 +93,7 @@ const Add = ({ token }) => {
       <div>
         <p className="mb-4 text-lg font-semibold sm:text-left">Upload Images</p>
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          {[image1, image2, image3, image4].map((img, index) => (
+          {[image1, image2, image3, image4, image5].map((img, index) => (
             <label
               key={index}
               htmlFor={`image${index + 1}`}
@@ -99,7 +113,7 @@ const Add = ({ token }) => {
                 id={`image${index + 1}`}
                 hidden
                 onChange={(e) => {
-                  const setImage = [setImage1, setImage2, setImage3, setImage4][index];
+                  const setImage = [setImage1, setImage2, setImage3, setImage4, setImage5][index];
                   setImage(e.target.files[0]);
                 }}
               />
@@ -146,7 +160,7 @@ const Add = ({ token }) => {
             value={subDescription}
           ></input>
 
-          <p className="mt-4 mb-2 text-lg font-medium text-gray-700">Product material</p>
+          <p className="mt-4 mb-2 text-lg font-medium text-gray-700">Product Material</p>
           <input
             className="w-full lg:w-auto max-w-md px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
             type="text"
@@ -160,7 +174,7 @@ const Add = ({ token }) => {
         {/* Product Care */}
         <div className="w-full lg:w-1/2 mt-4 lg:mt-0">
           <p className="mb-2 text-lg font-medium text-gray-700">
-            Product Care {"(Washing Type)"}
+            Product Care (Washing Type)
           </p>
           <input
             className="w-full lg:w-auto max-w-md px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
@@ -173,15 +187,13 @@ const Add = ({ token }) => {
         </div>
       </div>
 
-
-
-
-
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
+      {/* Category, Type & Price */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+        {/* Product Category */}
         <div>
           <p className="mb-2 text-lg font-medium text-gray-700">Product Category</p>
           <select
-            className="w-max px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            className="w-full px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
             required
             onChange={(e) => setCategory(e.target.value)}
           >
@@ -190,42 +202,83 @@ const Add = ({ token }) => {
           </select>
         </div>
 
+        {/* Product Type Selection */}
         <div>
-          <p className="mb-2 text-lg font-medium text-gray-700">Product Top</p>
-          <select
-            className="w-max px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
-            required
-            onChange={(e) => setSubCategory(e.target.value)}
-          >
-            <option value="Shirt">Shirt</option>
-            <option value="T-Shirt">T-Shirt</option>
-            <option value="Polos">Polos</option>
-            <option value="Sweatshirts">Sweatshirts</option>
-            <option value="Jacket">Jacket</option>
-          </select>
+          <p className="mb-2 text-lg font-medium text-gray-700">Product Type</p>
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="productType"
+                value="topwear"
+                checked={productType === "topwear"}
+                onChange={() => {
+                  setProductType("topwear");
+                  setSubCategory("Shirt");
+                }}
+                className="cursor-pointer"
+              />
+              <span>Topwear</span>
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="productType"
+                value="bottomwear"
+                checked={productType === "bottomwear"}
+                onChange={() => {
+                  setProductType("bottomwear");
+                  setSubCategory("Jeans");
+                }}
+                className="cursor-pointer"
+              />
+              <span>Bottomwear</span>
+            </label>
+          </div>
         </div>
 
+        {/* Subcategory based on Product Type */}
         <div>
-          <p className="mb-2 text-lg font-medium text-gray-700">Product Bottom</p>
-          <select
-            className="w-max px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
-            required
-            onChange={(e) => setSubCategory(e.target.value)}
-          >
-            <option value="Jeans">Jeans</option>
-            <option value="Trousers">Trousers</option>
-            <option value="Cargo">Cargo</option>
-            <option value="Joggers">Joggers</option>
-            <option value="TrackPant">TrackPant</option>
-            <option value="Shorts">Shorts</option>
-          </select>
+          {productType === "topwear" ? (
+            <>
+              <p className="mb-2 text-lg font-medium text-gray-700">Product Top</p>
+              <select
+                className="w-full px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+                required
+                onChange={(e) => setSubCategory(e.target.value)}
+                value={subCategory}
+              >
+                {["Shirt", "T-Shirt", "Polos", "Sweatshirts", "Jacket"].map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </>
+          ) : (
+            <>
+              <p className="mb-2 text-lg font-medium text-gray-700">Product Bottom</p>
+              <select
+                className="w-full px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+                required
+                onChange={(e) => setSubCategory(e.target.value)}
+                value={subCategory}
+              >
+                {["Jeans", "Trousers", "Cargo", "Joggers", "TrackPant", "Shorts"].map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
         </div>
 
-
+        {/* Product Price */}
         <div>
           <p className="mb-2 text-lg font-medium text-gray-700">Product Price</p>
           <input
-            className="w-32 px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            className="w-full px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
             type="number"
             placeholder="25"
             required
@@ -233,13 +286,13 @@ const Add = ({ token }) => {
             value={price}
           />
         </div>
-
       </div>
 
+      {/* Size Selection */}
       <div>
-        <p className="mb-2">Product Sizes</p>
+        <p className="mb-2 text-gray-700 text-lg">Product Sizes Topwear</p>
         <div className="flex gap-3">
-          {['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
+          {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
             <div
               key={size}
               onClick={() =>
@@ -248,10 +301,7 @@ const Add = ({ token }) => {
                 )
               }
             >
-              <p
-                className={`${sizes.includes(size) ? 'bg-pink-100' : 'bg-slate-200'
-                  } px-3 py-1 cursor-pointer`}
-              >
+              <p className={`${sizes.includes(size) ? "bg-pink-100" : "bg-slate-200"} px-3 py-1 cursor-pointer`}>
                 {size}
               </p>
             </div>
@@ -259,6 +309,27 @@ const Add = ({ token }) => {
         </div>
       </div>
 
+      <div>
+        <p className="mb-2 text-gray-700 text-lg">Product Sizes Bottomwear</p>
+        <div className="flex gap-3">
+          {[28, 30, 32, 34, 36, 38, 40, 42, 44].map((size) => (
+            <div
+              key={size}
+              onClick={() =>
+                setSizes((prev) =>
+                  prev.includes(size) ? prev.filter((item) => item !== size) : [...prev, size]
+                )
+              }
+            >
+              <p className={`${sizes.includes(size) ? "bg-pink-100" : "bg-slate-200"} px-3 py-1 cursor-pointer`}>
+                {size}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bestseller Checkbox */}
       <div className="flex gap-2 mt-2">
         <input
           type="checkbox"
