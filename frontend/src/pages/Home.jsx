@@ -9,8 +9,11 @@ import OurPolicy from "../components/OurPolicy";
 const Home = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    if (user.name) {
-      toast.success(`Welcome , ${user.name}! 👋`, {
+    const welcomeShown = localStorage.getItem("welcomeShown");
+
+    // Show the welcome toast only if the user exists and it hasn't been shown yet
+    if (user.name && !welcomeShown) {
+      toast.success(`Welcome, ${user.name}! 👋`, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -18,6 +21,8 @@ const Home = () => {
         pauseOnHover: true,
         draggable: true,
       });
+      // Set the flag so that the message is not shown again during this session
+      localStorage.setItem("welcomeShown", "true");
     }
   }, []);
 

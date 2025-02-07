@@ -14,7 +14,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
+  const { setToken, navigate, backendUrl } = useContext(ShopContext);
   const [loading, setLoading] = useState(false);
 
   const onSubmitHandler = async (event) => {
@@ -34,7 +34,8 @@ const Login = () => {
       password,
     };
 
-    const endpoint = currentState === "Login" ? "/api/user/login" : "/api/user/register";
+    const endpoint =
+      currentState === "Login" ? "/api/user/login" : "/api/user/register";
 
     try {
       const response = await fetch(`${backendUrl}${endpoint}`, {
@@ -48,7 +49,10 @@ const Login = () => {
       if (data.success) {
         if (currentState === "Login") {
           if (rememberMe) {
-            const encryptedPassword = CryptoJS.AES.encrypt(password, "secret-key").toString();
+            const encryptedPassword = CryptoJS.AES.encrypt(
+              password,
+              "secret-key"
+            ).toString();
             localStorage.setItem(
               "loginCredentials",
               JSON.stringify({
@@ -61,20 +65,18 @@ const Login = () => {
             localStorage.removeItem("loginCredentials");
           }
           
-          // Show welcome message with user's name
-          toast.success(`Welcome back, ${data.user.name}! 👋`, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+          // Store user data in localStorage
+          localStorage.setItem("user", JSON.stringify(data.user));
+          // Clear the welcome flag so it can be shown once on Home after login
+          localStorage.removeItem("welcomeShown");
         } else {
           toast.success("SignUp successful !");
         }
 
-        if (data.token) setToken(data.token);
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          setToken(data.token); // This will trigger the useEffect in ShopContext
+        }
         navigate("/");
       } else {
         toast.error(data.message || "An error occurred!");
@@ -90,9 +92,19 @@ const Login = () => {
     if (currentState === "Login") {
       const savedCredentials = localStorage.getItem("loginCredentials");
       if (savedCredentials) {
-        const { identifier: savedIdentifier, password: encryptedPassword, rememberMe: savedRememberMe } = JSON.parse(savedCredentials);
+        const {
+          identifier: savedIdentifier,
+          password: encryptedPassword,
+          rememberMe: savedRememberMe,
+        } = JSON.parse(savedCredentials);
         setIdentifier(savedIdentifier || "");
-        setPassword(encryptedPassword ? CryptoJS.AES.decrypt(encryptedPassword, "secret-key").toString(CryptoJS.enc.Utf8) : "");
+        setPassword(
+          encryptedPassword
+            ? CryptoJS.AES.decrypt(encryptedPassword, "secret-key").toString(
+                CryptoJS.enc.Utf8
+              )
+            : ""
+        );
         setRememberMe(savedRememberMe || false);
       }
     } else {
@@ -180,15 +192,24 @@ const Login = () => {
           <p className="cursor-pointer font-medium">Forgot Your Password?</p>
         )}
         <p
-          onClick={() => setCurrentState((prev) => (prev === "Login" ? "SignUp" : "Login"))}
+          onClick={() =>
+            setCurrentState((prev) => (prev === "Login" ? "SignUp" : "Login"))
+          }
           className="cursor-pointer font-medium"
         >
           {currentState === "Login" ? "Create Account" : "Login Here"}
         </p>
       </div>
 
-      <button className="bg-black text-white font-light px-8 py-2 mt-4" disabled={loading}>
-        {loading ? "Processing..." : currentState === "Login" ? "Sign In" : "Sign Up"}
+      <button
+        className="bg-black text-white font-light px-8 py-2 mt-4"
+        disabled={loading}
+      >
+        {loading
+          ? "Processing..."
+          : currentState === "Login"
+          ? "Sign In"
+          : "Sign Up"}
       </button>
     </form>
   );
