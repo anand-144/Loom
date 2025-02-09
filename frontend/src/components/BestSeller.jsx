@@ -63,7 +63,7 @@ const BestSeller = () => {
       {visibleCount < bestSeller.length && (
         <div className="text-center mt-12">
           <button
-            className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-900 text-white rounded-full hover:bg-gray-800 transform transition-all duration-300 hover:shadow-lg active:scale-95"
+            className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-gray-700 via-black  to-gray-700   text-white rounded-full hover:bg-gray-800 transform transition-all duration-300 hover:shadow-lg active:scale-95"
             onClick={handleLoadMore}
           >
             Load More Products

@@ -1,11 +1,25 @@
 import { Routes, Route } from "react-router-dom";
-import { Home, Collections, About, Contact, Product, Cart, Login, PlaceOrder, Orders, PrivacyPolicy, DeliveryPartner, Team } from "./pages/";
+import {
+  Home,
+  Collections,
+  About,
+  Contact,
+  Product,
+  Cart,
+  Login,
+  PlaceOrder,
+  Orders,
+  PrivacyPolicy,
+  DeliveryPartner,
+  Team,
+} from "./pages/";
 import Navbar from "./components/Navbar";
 import Exchange from "./pages/Exchange";
 import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
-import SizeChart from "./components/SizeChart";
 import ShopContextProvider from "./context/ShopContext";
+import DiscountBanner from "./components/DiscountBanner";
+import SizeChart from "./components/SizeChart"
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,6 +29,8 @@ const App = () => {
     <ShopContextProvider>
       <div className="w-full min-h-screen overflow-x-hidden flex flex-col bg-gradient-to-br from-white to-gray-50">
         <ToastContainer />
+        {/* Render the discount banner above the Navbar */}
+        <DiscountBanner />
         <Navbar />
         <SearchBar />
         <main className="flex-grow container mx-auto px-4 sm:px-[5%] md:px-[7%] lg:px-[9%] py-8">

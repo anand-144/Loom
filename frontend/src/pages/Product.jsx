@@ -1,3 +1,4 @@
+// frontend/src/pages/Product.jsx
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
@@ -8,11 +9,11 @@ import ProductReviews from "../components/ProductReviews";
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart, backendUrl } = useContext(ShopContext);
+  const { products, currency, addToCart, backendUrl, discount } =
+    useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
-  // State for aggregated rating data
   const [aggregatedRating, setAggregatedRating] = useState({
     averageRating: 0,
     reviewCount: 0,
@@ -26,7 +27,13 @@ const Product = () => {
     "TrackPant",
     "Shorts",
   ];
-  const topWearCategories = ["Shirt", "T-Shirt", "Polos", "Sweatshirts", "Jacket"];
+  const topWearCategories = [
+    "Shirt",
+    "T-Shirt",
+    "Polos",
+    "Sweatshirts",
+    "Jacket",
+  ];
 
   useEffect(() => {
     if (products.length > 0) {
@@ -38,7 +45,7 @@ const Product = () => {
     }
   }, [productId, products]);
 
-  // Fetch aggregated rating data when productId changes
+  // Fetch aggregated rating data
   useEffect(() => {
     if (productId && backendUrl) {
       axios
@@ -66,6 +73,18 @@ const Product = () => {
     }
   }
 
+  // Helper functions
+  const calculateDiscountedPrice = (price) => {
+    if (discount?.active && discount?.discountPercentage > 0) {
+      return price - (price * discount.discountPercentage) / 100;
+    }
+    return price;
+  };
+
+  const formatPrice = (price) => {
+    return price.toFixed(2).replace(/\.00$/, '');
+  };
+
   return productData ? (
     <div className="container mx-auto px-4 py-6 md:py-12">
       {/* Breadcrumb */}
@@ -85,7 +104,6 @@ const Product = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
         {/* Product Images */}
         <div className="space-y-4">
-          {/* Main Image */}
           <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-gray-100 shadow-lg">
             <img
               src={image}
@@ -93,7 +111,6 @@ const Product = () => {
               className="w-full h-full object-cover object-center transition-all duration-300"
             />
           </div>
-          {/* Thumbnail Images */}
           <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
             {productData.image.map((item, index) => (
               <button
@@ -119,16 +136,29 @@ const Product = () => {
             {productData.name}
           </h1>
 
-          {/* Read-Only Aggregated Rating Display */}
           <ReadOnlyRating
             averageRating={aggregatedRating.averageRating}
             reviewCount={aggregatedRating.reviewCount}
           />
 
-          <p className="text-3xl font-semibold text-gray-800">
-            {currency}
-            {productData.price}
-          </p>
+          {/* Price Display with Discount */}
+          <div>
+            {discount?.active && discount?.discountPercentage > 0 ? (
+              <div className="flex items-baseline space-x-2">
+                <p className="text-lg text-gray-500 line-through">
+                  {currency}{formatPrice(productData.price)}
+                </p>
+                <p className="text-3xl font-semibold text-gray-800">
+                  {currency}{formatPrice(calculateDiscountedPrice(productData.price))}
+                </p>
+              </div>
+            ) : (
+              <p className="text-3xl font-semibold text-gray-800">
+                {currency}{formatPrice(productData.price)}
+              </p>
+            )}
+          </div>
+
           <p className="text-gray-600 leading-relaxed">
             {productData.description}
           </p>
@@ -163,7 +193,6 @@ const Product = () => {
             </div>
           </div>
 
-          {/* Add to Cart */}
           <button
             onClick={() => addToCart(productData._id, size)}
             className="w-full bg-gray-800 text-white py-3 rounded-lg hover:bg-gray-900 transition-colors"
@@ -201,7 +230,7 @@ const Product = () => {
               {productData.subDescription}
             </p>
             <div className="mt-4">
-              <h3 className="font-bold text-gray-800">Material & Care</h3>
+              <h3 className="font-bold text-gray-800">Material &amp; Care</h3>
               <p className="text-gray-700">{productData.material}</p>
               <p className="text-gray-700">{productData.care}</p>
             </div>

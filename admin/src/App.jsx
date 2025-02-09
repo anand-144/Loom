@@ -1,7 +1,8 @@
+// /admin/src/App.jsx
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Login, Navbar, Sidebar } from './components';
-import { Add, List, Orders } from './pages';
+import { Add, List, Orders, DiscountSettings } from './pages';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,6 +11,7 @@ export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = import.meta.env.VITE_CURRENCY;
 
 const App = () => {
+  // Use 'token' key for storing and retrieving the admin token
   const [token, setToken] = useState(
     localStorage.getItem('token') ? localStorage.getItem('token') : ''
   );
@@ -25,17 +27,18 @@ const App = () => {
         <Login setToken={setToken} />
       ) : (
         <>
-          <Navbar setToken={setToken}/>
+          <Navbar setToken={setToken} />
           <hr />
           <div className='flex w-full'>
             <Sidebar />
             <div className='w-[70%] mx-auto ml-[max(5vw, 25px)] my-8 text-gray-600 text-base'>
               <Routes>
-                {/* Redirect root to /list */}
+                {/* Redirect root to /add */}
                 <Route path='/' element={<Navigate to='/add' replace />} />
                 <Route path='/add' element={<Add token={token} />} />
                 <Route path='/list' element={<List token={token} />} />
                 <Route path='/orders' element={<Orders token={token} />} />
+                <Route path='/discount-settings' element={<DiscountSettings />} />
               </Routes>
             </div>
           </div>

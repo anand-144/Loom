@@ -1,3 +1,4 @@
+// /frontend/src/context/ShopContext.jsx
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -15,14 +16,34 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState(() => localStorage.getItem('token') || '');
+  // Discount state with default values
+  const [discount, setDiscount] = useState({
+    active: false,
+    discountPercentage: 0,
+  });
   const navigate = useNavigate();
 
-  // Persist token to localStorage whenever it changes
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
     }
   }, [token]);
+
+  // Fetch discount settings from the backend
+  useEffect(() => {
+    const fetchDiscount = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/discount`);
+        if (response.data && response.data.discount) {
+          setDiscount(response.data.discount);
+        }
+      } catch (error) {
+        console.error("Error fetching discount:", error);
+      }
+    };
+
+    fetchDiscount();
+  }, [backendUrl]);
 
   const addToCart = async (itemId, size) => {
     if (!size) {
@@ -80,20 +101,26 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  const getCartCount = () => {
-    return Object.values(cartItems).reduce((totalCount, sizes) => {
-      return totalCount + Object.values(sizes).reduce((sum, qty) => sum + qty, 0);
-    }, 0);
-  };
-
+  // Updated getCartAmount: Apply discount per product if active
   const getCartAmount = () => {
     return Object.entries(cartItems).reduce((totalAmount, [itemId, sizes]) => {
       const itemInfo = products.find((product) => product._id === itemId);
       if (!itemInfo) return totalAmount;
 
+      // Compute effective price for each product if discount is active
+      const effectivePrice = discount && discount.active && discount.discountPercentage > 0
+        ? itemInfo.price - (itemInfo.price * discount.discountPercentage) / 100
+        : itemInfo.price;
+
       return totalAmount + Object.entries(sizes).reduce((sum, [size, qty]) => {
-        return sum + itemInfo.price * qty;
+        return sum + effectivePrice * qty;
       }, 0);
+    }, 0);
+  };
+
+  const getCartCount = () => {
+    return Object.values(cartItems).reduce((totalCount, sizes) => {
+      return totalCount + Object.values(sizes).reduce((sum, qty) => sum + qty, 0);
     }, 0);
   };
 
@@ -111,7 +138,7 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  // Updated getUserCart: add a guard to exit early if token is missing
+  // Fetch user cart if token exists
   const getUserCart = async (token) => {
     if (!token) return;
 
@@ -130,7 +157,6 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  // Updated useEffect: call getUserCart only if token exists
   useEffect(() => {
     getProductsData();
     if (token) {
@@ -155,7 +181,9 @@ const ShopContextProvider = (props) => {
     navigate,
     backendUrl,
     token,
-    setToken
+    setToken,
+    discount,    // Provide discount in context
+    setDiscount, // In case you want to update discount from the UI
   };
 
   return (

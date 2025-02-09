@@ -8,12 +8,12 @@ import productRouter from './routes/productRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import orderRouter from './routes/orderRoute.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import discountRouter from './routes/discountRoute.js';
 
-// App Config
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Connect to MongoDB
+// Connect to MongoDB and Cloudinary
 connectDB();
 connectCloudinary();
 
@@ -21,17 +21,18 @@ connectCloudinary();
 app.use(express.json());
 app.use(cors());
 
-// Endpoints
+// Mount routes
 app.use('/api/user', userRouter);
 app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/order', orderRouter);
 app.use('/api/review', reviewRoutes);
+app.use('/api/discount', discountRouter);
 
 app.get('/', (req, res) => {
-    res.send("API WORKING");
+  res.send("API WORKING");
 });
 
 app.listen(port, () => {
-    console.log("Server started on PORT: " + port);
+  console.log("Server started on PORT: " + port);
 });

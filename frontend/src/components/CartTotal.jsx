@@ -1,13 +1,18 @@
-import { useContext } from "react";
-import { ShopContext } from "../context/ShopContext";
-import Title from "./Title";
+// /frontend/src/components/CartTotal.jsx
+import React from 'react';
+import Title from './Title';
+import { useContext } from 'react';
+import { ShopContext } from '../context/ShopContext';
 
 const CartTotal = () => {
   const { currency, delivery_fee, getCartAmount } = useContext(ShopContext);
 
-  // Store cart amount to avoid multiple function calls
+  // Use the discounted cart amount if applicable
   const cartSubtotal = getCartAmount();
   const cartTotal = cartSubtotal === 0 ? 0 : cartSubtotal + delivery_fee;
+
+  // Optional: A helper to format the price without trailing ".00"
+  const formatPrice = (price) => price.toFixed(2).replace(/\.00$/, '');
 
   return (
     <div className="w-full">
@@ -19,14 +24,14 @@ const CartTotal = () => {
         <div className="flex justify-between">
           <p>Subtotal</p>
           <p>
-            {currency} {cartSubtotal.toFixed(2)}
+            {currency} {formatPrice(cartSubtotal)}
           </p>
         </div>
         <hr />
         <div className="flex justify-between">
           <p>Shipping Fee</p>
           <p>
-            {currency} {delivery_fee.toFixed(2)}
+            {currency} {formatPrice(delivery_fee)}
           </p>
         </div>
         <hr />
@@ -34,7 +39,7 @@ const CartTotal = () => {
         <div className="flex justify-between">
           <b>Total</b>
           <b>
-            {currency} {cartTotal.toFixed(2)}
+            {currency} {formatPrice(cartTotal)}
           </b>
         </div>
       </div>

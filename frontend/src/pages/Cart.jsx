@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ShopContext } from "../context/ShopContext";
-import Title from '../components/Title';
+import Title from "../components/Title";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import CartTotal from "../components/CartTotal";
 import { toast } from "react-toastify";
@@ -15,11 +15,13 @@ const Cart = () => {
     setCartItems, 
     navigate, 
     backendUrl, 
-    token  // <-- token from context to check login status
+    token,
+    discount  // get discount from context
   } = useContext(ShopContext);
   
   const [cartData, setCartData] = useState([]);
 
+  // Build a flat array of items from the cartItems object
   useEffect(() => {
     if (products.length > 0) {
       const tempData = [];
@@ -44,7 +46,7 @@ const Cart = () => {
     if (!isNaN(newQuantity) && newQuantity > 0) {
       await updateCartItemQuantity(itemId, size, newQuantity);
 
-      // Fetch updated cart data
+      // Fetch updated cart data from backend
       try {
         const response = await axios.post(
           `${backendUrl}/api/cart/get`,
@@ -62,22 +64,20 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    // Check if the user is logged in by verifying the token
     if (!token) {
       toast.error("Please sign up or login first");
       navigate("/login");
       return;
     }
-
-    // Check if the cart is empty
     if (cartData.length === 0) {
       toast.error("Your cart is empty. Add something before proceeding!");
       return;
     }
-
-    // If logged in and cart is not empty, proceed to checkout
     navigate('/place-order');
   };
+
+  // Helper function to format a price (remove trailing ".00")
+  const formatPrice = (price) => price.toFixed(2).replace(/\.00$/, '');
 
   return (
     <div className="border-t pt-14">
@@ -88,6 +88,12 @@ const Cart = () => {
       <div>
         {cartData.map((item, index) => {
           const productData = products.find((product) => product._id === item._id);
+          
+          // Compute effective price: if discount is active, apply discount; otherwise use original price
+          const effectivePrice =
+            productData && discount?.active && discount.discountPercentage > 0
+              ? productData.price - (productData.price * discount.discountPercentage) / 100
+              : productData?.price;
 
           return (
             <div
@@ -106,7 +112,20 @@ const Cart = () => {
                   </p>
                   <div className="flex flex-wrap items-center gap-3 mt-2">
                     <p className="font-medium">
-                      {currency}{productData?.price || "N/A"}
+                      {discount?.active && discount.discountPercentage > 0 && productData?.price ? (
+                        <>
+                          <span className="line-through text-gray-500 mr-2">
+                            {currency}{formatPrice(productData.price)}
+                          </span>
+                          <span>
+                            {currency}{formatPrice(effectivePrice)}
+                          </span>
+                        </>
+                      ) : (
+                        <span>
+                          {currency}{productData?.price ? formatPrice(productData.price) : "N/A"}
+                        </span>
+                      )}
                     </p>
                     <p className="px-4 sm:px-3 sm:py-1 py-2 border rounded bg-gray-100">
                       Size: {item.size}

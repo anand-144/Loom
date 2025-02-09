@@ -269,7 +269,7 @@
             {visibleCount < filterProducts.length && (
               <div className="text-center mt-6 mb-20 lg:mb-6">
                 <button
-                  className="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700"
+                  className="px-6 py-2 bg-gradient-to-r from-gray-700 via-black  to-gray-700 text-white rounded-lg hover:bg-gray-700"
                   onClick={handleLoadMore}
                 >
                   Load More
