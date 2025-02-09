@@ -12,21 +12,21 @@ const ReviewList = ({ reviews }) => {
                 <FaStar
                   key={i}
                   className={`text-xl ${
-                    i < review.rating ? "text-yellow-500" : "text-gray-300"
+                    i < review.rating ? "text-yellow-500" : "text-slate-500 "
                   }`}
                 />
               ))}
             </div>
             {/* Display reviewer's name */}
-            <p className="text-gray-900 font-semibold">{review.name}</p>
+            <p className="text-gray-700 font-semibold">{review.name}</p>
             <p className="text-gray-700">{review.text}</p>
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-gray-600 mt-2">
               {new Date(review.createdAt).toLocaleDateString()}
             </p>
           </div>
         ))
       ) : (
-        <p className="text-center text-gray-500">
+        <p className="text-center text-gray-600">
           No reviews yet. Be the first to review this product!
         </p>
       )}

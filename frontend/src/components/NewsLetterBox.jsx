@@ -20,10 +20,10 @@ const NewsLetterBox = () => {
 
     return (
         <div className="text-center overflow-hidden">
-            <p className='text-2xl font-medium text-gray-800'>
+            <p className='text-2xl font-medium text-gray-900'>
                 Subscribe now & get 20% off
             </p>
-            <p className='text-gray-400 mt-3'>
+            <p className='text-gray-500 mt-3'>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Placeat, numquam.  
             </p> 
             <form onSubmit={onSubmitHandler} className='w-full sm:w-1/2 flex items-center gap-3 mx-auto my-6 border pl-3'>
@@ -45,7 +45,7 @@ const NewsLetterBox = () => {
                 </button>
             </form>
             {message && (
-                <p className={`mt-4 ${success ? 'text-green-500' : 'text-red-500'}`}>
+                <p className={`mt-4 ${success ? 'text-gray-600' : 'text-red-500'}`}>
                     {message}
                 </p>
             )}

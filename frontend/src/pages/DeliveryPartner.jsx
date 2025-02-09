@@ -6,8 +6,8 @@ const DeliveryPartner = () => {
         <div className='max-w-6xl mx-auto my-16 p-8 bg-white shadow-lg rounded-lg'>
             {/* Header Section */}
             <div className='mb-10 text-center'>
-                <h1 className='text-4xl font-bold text-gray-800'>Our Delivery Partners</h1>
-                <p className='text-gray-600 mt-4'>
+                <h1 className='text-4xl font-bold text-gray-900'>Our Delivery Partners</h1>
+                <p className='text-gray-500 mt-4'>
                     We work with trusted delivery partners to ensure your packages arrive on time and in perfect condition.
                 </p>
             </div>
@@ -29,9 +29,9 @@ const DeliveryPartner = () => {
             <div className='mt-16'>
                 <div className='flex items-center mb-4'>
                     <FaHandshake className='text-blue-600 text-3xl mr-3' />
-                    <h2 className='text-2xl font-semibold text-gray-800'>Interested in Partnering with Us?</h2>
+                    <h2 className='text-2xl font-semibold text-gray-900'>Interested in Partnering with Us?</h2>
                 </div>
-                <p className='text-gray-600'>
+                <p className='text-gray-500'>
                     We are always looking for new delivery partners to help us deliver exceptional service. If you're interested in collaborating,
                     feel free to reach out to us. We're open to discussing how we can work together to make our deliveries even better.
                 </p>
@@ -41,15 +41,15 @@ const DeliveryPartner = () => {
             <div className='mt-10'>
                 <div className='flex items-center mb-4'>
                     <FaPhoneAlt className='text-blue-600 text-2xl mr-3' />
-                    <h3 className='text-xl font-medium text-gray-800'>Contact Us</h3>
+                    <h3 className='text-xl font-medium text-gray-900'>Contact Us</h3>
                 </div>
-                <p className='text-gray-600'>
+                <p className='text-gray-500'>
                     Email us at{' '}
                     <a href="mailto:partners@example.com" className='text-blue-500 underline'>
                         partners@example.com
                     </a>{' '}
                     or call us at{' '}
-                    <span className='font-semibold text-gray-800'>+91 9876543210</span>.
+                    <span className='font-semibold text-gray-900'>+91 9876543210</span>.
                 </p>
             </div>
         </div>

@@ -48,7 +48,7 @@ const ReviewForm = ({ productId, onReviewSubmitted }) => {
   if (!isLoggedIn) {
     return (
       <div className="bg-white p-4 rounded shadow mb-8 text-center">
-        <p className="text-gray-600 mb-2">Please log in to write a review</p>
+        <p className="text-gray-500 mb-2">Please log in to write a review</p>
         <a 
           href="/login" 
           className="text-blue-600 hover:text-blue-800 underline"
@@ -67,7 +67,7 @@ const ReviewForm = ({ productId, onReviewSubmitted }) => {
           <FaStar
             key={star}
             className={`cursor-pointer text-2xl ${
-              star <= (hover || rating) ? "text-yellow-500" : "text-gray-300"
+              star <= (hover || rating) ? "text-yellow-500" : "text-slate-500"
             }`}
             onClick={() => setRating(star)}
             onMouseEnter={() => setHover(star)}

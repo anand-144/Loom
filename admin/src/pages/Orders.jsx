@@ -42,7 +42,7 @@ const Orders = ({ token }) => {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      <h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-gray-800">My Orders</h3>
+      <h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-gray-900">My Orders</h3>
       <div className="grid gap-4 sm:gap-6">
         {orders.map((order, index) => (
           <div key={index} className="bg-white rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
@@ -51,7 +51,7 @@ const Orders = ({ token }) => {
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <BsBox className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
-                  <span className="text-xs sm:text-sm text-gray-500">Order ID:</span>
+                  <span className="text-xs sm:text-sm text-gray-600">Order ID:</span>
                   <span className="text-xs sm:text-sm font-medium">{order._id}</span>
                 </div>
               </div>
@@ -72,15 +72,15 @@ const Orders = ({ token }) => {
                 <div className="lg:col-span-9 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {/* Items Section */}
                   <div className="space-y-3 sm:space-y-4">
-                    <h4 className="text-sm sm:text-base font-semibold text-gray-800">Order Items</h4>
+                    <h4 className="text-sm sm:text-base font-semibold text-gray-900">Order Items</h4>
                     <div className="space-y-2">
                       {order.items.map((item, itemIndex) => (
                         <div key={itemIndex} className="flex items-center gap-2 text-xs sm:text-sm">
                           <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-600"></div>
                           <span className="font-medium">{item.name}</span>
-                          <span className="text-gray-500">×{item.quantity}</span>
+                          <span className="text-gray-600">×{item.quantity}</span>
                           {item.size && (
-                            <span className="text-gray-500">({item.size})</span>
+                            <span className="text-gray-600">({item.size})</span>
                           )}
                         </div>
                       ))}
@@ -89,22 +89,22 @@ const Orders = ({ token }) => {
 
                   {/* Shipping Details */}
                   <div className="space-y-3 sm:space-y-4">
-                    <h4 className="text-sm sm:text-base font-semibold text-gray-800">Shipping Details</h4>
+                    <h4 className="text-sm sm:text-base font-semibold text-gray-900">Shipping Details</h4>
                     <div className="space-y-2 text-xs sm:text-sm">
                       <div className="flex items-center gap-2">
-                        <BsPerson className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <BsPerson className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
                         <span>{order.address.firstName} {order.address.lastName}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <BsPinMap className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <BsPinMap className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
                         <span className="line-clamp-1">{order.address.street}, {order.address.zipCode}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <BsTelephone className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <BsTelephone className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
                         <span>{order.address.phone}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <BsEnvelope className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <BsEnvelope className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
                         <span>{order.address.email}</span>
                       </div>
                     </div>
@@ -114,13 +114,13 @@ const Orders = ({ token }) => {
                   <div className="space-y-3 sm:space-y-4 sm:col-span-2">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
                       <div className="flex items-center gap-2">
-                        <BsCreditCard2Back className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <BsCreditCard2Back className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
                         <span className="text-xs sm:text-sm">
                           {order.paymentMethod} · {order.payment ? 'Paid' : 'Pending'}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <BsCalendar3 className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <BsCalendar3 className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
                         <span className="text-xs sm:text-sm">
                           {new Date(order.date).toLocaleDateString("en-GB")}
                         </span>
@@ -137,7 +137,7 @@ const Orders = ({ token }) => {
                           <option value="Out For delivery">Out For Delivery</option>
                           <option value="Delivered">Delivered</option>
                         </select>
-                        <BsChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                        <BsChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
                       </div>
                     </div>
                   </div>

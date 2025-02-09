@@ -190,7 +190,7 @@
                   <button
                     key={type}
                     onClick={() => toggleSubCategory(type)}
-                    className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
+                    className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-700"
                   >
                     {subCategory.includes(type) ? (
                       <ActiveIcon className="text-xl" />
@@ -218,7 +218,7 @@
                   <button
                     key={type}
                     onClick={() => toggleSubCategory(type)}
-                    className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
+                    className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-700"
                   >
                     {subCategory.includes(type) ? (
                       <PiPantsFill className="text-xl text-blue-500" />
@@ -287,7 +287,7 @@
                 <h2 className="text-xl font-semibold">Filters</h2>
                 <button
                   onClick={() => setShowFilter(false)}
-                  className="text-gray-500"
+                  className="text-gray-600"
                 >
                   ✕
                 </button>
@@ -377,7 +377,7 @@
                 <h2 className="text-xl font-semibold">Sort By</h2>
                 <button
                   onClick={() => setShowSort(false)}
-                  className="text-gray-500"
+                  className="text-gray-600"
                 >
                   ✕
                 </button>

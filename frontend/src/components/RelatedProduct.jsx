@@ -33,7 +33,7 @@ const RelatedProduct = ({ category, subCategory }) => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500 mt-8">No related products available.</p>
+        <p className="text-center text-gray-600 mt-8">No related products available.</p>
       )}
     </div>
   );

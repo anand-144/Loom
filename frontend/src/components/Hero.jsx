@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { assets } from '../assets/frontend_assets/assets';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { assets } from '../assets/frontend_assets/assets';
 
 const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -26,71 +27,88 @@ const Hero = () => {
     },
   ];
 
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? sections.length - 1 : prevIndex - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === sections.length - 1 ? 0 : prevIndex + 1));
-  };
-
-  // Auto slide effect
   useEffect(() => {
     const interval = setInterval(() => {
-      handleNext();
-    }, 5000); // Change slide every 5 seconds
+      setCurrentIndex((prev) => (prev === sections.length - 1 ? 0 : prev + 1));
+    }, 5000);
     return () => clearInterval(interval);
-  }, [currentIndex]);
+  }, [sections.length]);
 
   return (
-    <section className="relative">
-  {/* Hero Section */}
-  <div className="flex flex-col-reverse sm:flex-row border-2 rounded-sm border-gray-700 bg-[#ffd9c4]">
-    {/* Hero Left Side */}
-    <div className="w-full sm:w-1/2 flex items-center justify-center py-6 px-4 sm:py-0 font-medium">
-      <div className="text-[#414141] text-center sm:text-left px-4">
-        <div className="flex items-center justify-center sm:justify-start gap-2">
-          <div className="divider w-10 h-0.5 bg-gray-800"></div>
-          <p className="font-medium text-sm md:text-base">{sections[currentIndex].description}</p>
-        </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-5xl sm:py-3 leading-relaxed">
-          {sections[currentIndex].title}
-        </h1>
-        <Link to="/collections">
-          <div className="flex items-center justify-center sm:justify-start gap-2">
-            <p className="font-semibold text-sm md:text-base cursor-pointer hover:underline">
-              SHOP NOW
-            </p>
-            <div className="divider w-10 h-0.5 bg-gray-800"></div>
+    <div className="relative w-full overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-red-200 to-indigo-50">
+          <div className="grid md:grid-cols-2 min-h-[500px] lg:min-h-[600px]">
+            {/* Content */}
+            <div className="relative z-10 flex items-center p-6 sm:p-8 md:p-12 lg:p-16">
+              <div className="w-full">
+                <motion.div
+                  key={currentIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                  className="space-y-4 sm:space-y-6"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="h-0.5 w-8 sm:w-12 bg-pink-700"></div>
+                    <p className="text-sm md:text-base text-gray-600 font-medium tracking-wide">
+                      {sections[currentIndex].description}
+                    </p>
+                  </div>
+                  
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-700 leading-tight">
+                    {sections[currentIndex].title}
+                  </h1>
+                  
+                  <Link
+                    to="/collections"
+                    className="inline-flex items-center space-x-4 group"
+                  >
+                    <span className="text-sm sm:text-base md:text-lg font-semibold text-gray-700 group-hover:text-gray-600 transition-colors">
+                      SHOP NOW
+                    </span>
+                    <div className="h-0.5 w-8 sm:w-12 bg-gray-900 group-hover:bg-gray-600 transition-colors"></div>
+                  </Link>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Image */}
+            <div className="relative h-[250px] sm:h-[300px] md:h-full">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentIndex}
+                  src={sections[currentIndex].img}
+                  alt={sections[currentIndex].alt}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5 }}
+                />
+              </AnimatePresence>
+            </div>
           </div>
-        </Link>
+
+          {/* Indicators */}
+          <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 flex space-x-1.5 sm:space-x-2">
+            {sections.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+                  index === currentIndex
+                    ? 'bg-red-600 scale-110'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
-
-    {/* Indicator Dots */}
-    <div className="absolute bottom-4 right-4 flex gap-2 z-10">
-  {sections.map((_, index) => (
-    <div
-      key={index}
-      className={`w-2.5 h-2.5 rounded-full bg-white cursor-pointer ${index === currentIndex ? 'bg-opacity-100' : 'bg-opacity-50'}`}
-      onClick={() => setCurrentIndex(index)}
-      aria-label={`Go to slide ${index + 1}`}
-    />
-  ))}
-</div>
-
-
-    {/* Hero Right Side */}
-    <div className="w-full sm:w-1/2 h-[300px] sm:h-[400px] md:h-[500px] relative">
-      <img
-        className="w-full h-full object-cover transition-all duration-1000 ease-out"
-        src={sections[currentIndex].img}
-        alt={sections[currentIndex].alt}
-      />
-    </div>
-  </div>
-</section>
- 
   );
 };
 

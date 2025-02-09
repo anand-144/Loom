@@ -69,16 +69,16 @@ const List = ({ token }) => {
 
   return (
     <div className="p-4 sm:p-6">
-      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-800">All Products List</h2>
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-900">All Products List</h2>
       
       {/* Desktop Header */}
       <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_2fr_1fr_auto] gap-4 items-center p-3 bg-gray-100 rounded-lg mb-4">
-        <span className="text-sm font-semibold text-gray-600">Image</span>
-        <span className="text-sm font-semibold text-gray-600">Name</span>
-        <span className="text-sm font-semibold text-gray-600">Category</span>
-        <span className="text-sm font-semibold text-gray-600">Subcategory</span>
-        <span className="text-sm font-semibold text-gray-600">Price</span>
-        <span className="text-sm font-semibold text-gray-600 text-center w-24">Actions</span>
+        <span className="text-sm font-semibold text-gray-500">Image</span>
+        <span className="text-sm font-semibold text-gray-500">Name</span>
+        <span className="text-sm font-semibold text-gray-500">Category</span>
+        <span className="text-sm font-semibold text-gray-500">Subcategory</span>
+        <span className="text-sm font-semibold text-gray-500">Price</span>
+        <span className="text-sm font-semibold text-gray-500 text-center w-24">Actions</span>
       </div>
 
       {/* Product List */}
@@ -99,10 +99,10 @@ const List = ({ token }) => {
                     onClick={() => handleImageClick(item.image)}
                   />
                   <div className="flex-1">
-                    <h3 className="font-medium text-gray-800">{item.name}</h3>
-                    <p className="text-sm text-gray-500 mt-1">{item.category}</p>
-                    <p className="text-sm text-gray-500">{item.subCategory}</p>
-                    <p className="text-sm font-medium text-gray-800 mt-1">
+                    <h3 className="font-medium text-gray-900">{item.name}</h3>
+                    <p className="text-sm text-gray-600 mt-1">{item.category}</p>
+                    <p className="text-sm text-gray-600">{item.subCategory}</p>
+                    <p className="text-sm font-medium text-gray-900 mt-1">
                       {currency} {item.price?.toFixed(2)}
                     </p>
                   </div>
@@ -110,7 +110,7 @@ const List = ({ token }) => {
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                    className="p-2 text-green-600 hover:bg-blue-50 rounded-full transition-colors"
                     title="Edit"
                   >
                     <MdEdit className="text-xl" />
@@ -133,10 +133,10 @@ const List = ({ token }) => {
                   alt={item.name}
                   onClick={() => handleImageClick(item.image)}
                 />
-                <span className="text-sm text-gray-800">{item.name}</span>
-                <span className="text-sm text-gray-600">{item.category}</span>
-                <span className="text-sm text-gray-600">{item.subCategory}</span>
-                <span className="text-sm font-medium text-gray-800">
+                <span className="text-sm text-gray-900">{item.name}</span>
+                <span className="text-sm text-gray-500">{item.category}</span>
+                <span className="text-sm text-gray-500">{item.subCategory}</span>
+                <span className="text-sm font-medium text-gray-900">
                   {currency} {item.price?.toFixed(2)}
                 </span>
                 <div className="flex items-center gap-2 w-24 justify-end">
@@ -159,7 +159,7 @@ const List = ({ token }) => {
             </div>
           ))
         ) : (
-          <div className="text-center py-8 text-gray-500">No products available.</div>
+          <div className="text-center py-8 text-gray-600">No products available.</div>
         )}
       </div>
 
@@ -170,7 +170,7 @@ const List = ({ token }) => {
             <div className="flex justify-end mb-4">
               <button
                 onClick={closeModal}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-600 hover:text-gray-700"
               >
                 <MdCancel className="text-2xl" />
               </button>

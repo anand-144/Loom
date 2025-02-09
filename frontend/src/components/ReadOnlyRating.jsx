@@ -15,7 +15,7 @@ const ReadOnlyRating = ({ averageRating, reviewCount }) => {
           </span>
         ))}
       </div>
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-gray-500">
         ({averageRating.toFixed(1)} out of 5, {reviewCount} reviews)
       </span>
     </div>

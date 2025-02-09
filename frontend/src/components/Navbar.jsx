@@ -1,10 +1,10 @@
-import { assets } from '../assets/frontend_assets/assets';
+import React, { useState, useEffect, useContext } from 'react'; // Added useContext here
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FiSearch, FiUser, FiBox, FiLogOut, FiShoppingBag } from 'react-icons/fi';
 import { HiMenuAlt3 } from "react-icons/hi";
-import { useContext, useState, useEffect } from 'react';
-import { ShopContext } from '../context/ShopContext';
 import { IoIosArrowDown } from 'react-icons/io';
+import { ShopContext } from '../context/ShopContext';
+import { assets } from '../assets/frontend_assets/assets';
 
 const Navbar = () => {
   const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
@@ -12,6 +12,16 @@ const Navbar = () => {
 
   const [visible, setVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleUserIconClick = () => {
     if (!token) {
@@ -46,90 +56,154 @@ const Navbar = () => {
   const isLoginPage = location.pathname === '/login';
 
   return (
-    <div>
-      <div className="flex items-center justify-between py-5 px-4 sm:px-8 md:px-16 lg:px-36 font-medium">
-        <Link to='/'>
-          <img
-            src={assets.logo}
-            alt="Company Logo"
-            className="w-28 sm:w-[8rem] md:w-[9rem] lg:w-[9rem] xl:w-36"
-          />
-        </Link>
+    <div className={`sticky top-0 z-50 transition-all duration-300 ${
+      scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white'
+    }`}>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between py-4 px-4 sm:px-6 lg:px-8">
+          <Link to='/' className="flex-shrink-0">
+            <img
+              src={assets.logo}
+              alt="Company Logo"
+              className="h-8 sm:h-10 w-auto"
+            />
+          </Link>
 
-        {!isLoginPage && (
-          <ul className="hidden sm:flex gap-5 text-md font-semibold text-gray-700">
-            <NavLink to="/" className="flex flex-col items-center gap-1">
-              <p>Home</p>
-              <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-            </NavLink>
-            <NavLink to="/collections" className="flex flex-col items-center gap-1">
-              <p>Collection</p>
-              <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-            </NavLink>
-            <NavLink to="/about" className="flex flex-col items-center gap-1">
-              <p>About</p>
-              <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-            </NavLink>
-            <NavLink to="/contact" className="flex flex-col items-center gap-1">
-              <p>Contact</p>
-              <hr className="w-2/4 border-none h-[1.5px] bg-grey-700 hidden" />
-            </NavLink>
-          </ul>
-        )}
-
-        <div className="flex items-center gap-6">
           {!isLoginPage && (
-            <FiSearch className="w-5 h-5 cursor-pointer" onClick={() => setShowSearch(true)} />
+            <nav className="hidden sm:flex items-center space-x-8">
+              <NavLink to="/" className={({ isActive }) => 
+                `text-sm font-medium transition-colors hover:text-pink-600 ${isActive ? 'text-gray-600' : 'text-gray-700'}`
+              }>
+                Home
+              </NavLink>
+              <NavLink to="/collections" className={({ isActive }) => 
+                `text-sm font-medium transition-colors hover:text-pink-600 ${isActive ? 'text-gray-600' : 'text-gray-700'}`
+              }>
+                Collection
+              </NavLink>
+              <NavLink to="/about" className={({ isActive }) => 
+                `text-sm font-medium transition-colors hover:text-pink-600 ${isActive ? 'text-gray-600' : 'text-gray-700'}`
+              }>
+                About
+              </NavLink>
+              <NavLink to="/contact" className={({ isActive }) => 
+                `text-sm font-medium transition-colors hover:text-pink-600  ${isActive ? 'text-gray-600' : 'text-gray-700'}`
+              }>
+                Contact
+              </NavLink>
+            </nav>
           )}
 
-          <div className="relative z-20">
-            <div
-              className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center text-white cursor-pointer"
-              onClick={handleUserIconClick}
-              aria-label="User menu"
-            >
-              <FiUser className="w-4 h-4" />
-            </div>
-            {token && dropdownVisible && (
-              <div className="absolute right-0 pt-4 z-30">
-                <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded-lg shadow-md">
-                  <p className="cursor-pointer hover:text-gray-700 flex items-center gap-2">
-                    <FiUser /> My Profile
-                  </p>
-                  <p className="cursor-pointer hover:text-gray-700 flex items-center gap-2" onClick={() => navigate('/orders')}>
-                    <FiBox /> Orders
-                  </p>
-                  <p onClick={handleLogout} className="cursor-pointer hover:text-gray-700 flex items-center gap-2">
-                    <FiLogOut /> Logout
-                  </p>
-                </div>
-              </div>
+          <div className="flex items-center space-x-6">
+            {!isLoginPage && (
+              <button
+                className="text-gray-700 hover:text-pink-600 transition-colors"
+                onClick={() => setShowSearch(true)}
+              >
+                <FiSearch className="w-5 h-5" />
+              </button>
             )}
+
+            <div className="relative">
+              <button
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                onClick={handleUserIconClick}
+                aria-label="User menu"
+              >
+                <FiUser className="w-4 h-4 text-gray-700" />
+              </button>
+
+              {token && dropdownVisible && (
+                <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="py-1">
+                    <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      <FiUser className="mr-3 h-4 w-4" /> My Profile
+                    </a>
+                    <a href="/orders" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      <FiBox className="mr-3 h-4 w-4" /> Orders
+                    </a>
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <FiLogOut className="mr-3 h-4 w-4" /> Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {!isLoginPage && (
+              <Link to='/cart' className="relative">
+                <FiShoppingBag className="w-5 h-5 text-gray-700 hover:text-pink-600 transition-colors" />
+                {getCartCount() > 0 && (
+                  <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-gray-600 flex items-center justify-center text-xs font-medium text-white">
+                    {getCartCount()}
+                  </span>
+                )}
+              </Link>
+            )}
+
+            <button
+              className="sm:hidden text-gray-700 hover:text-pink-600 transition-colors"
+              onClick={() => setVisible(true)}
+            >
+              <HiMenuAlt3 className="w-6 h-6" />
+            </button>
           </div>
-
-          {!isLoginPage && (
-            <Link to='/cart' className='relative'>
-              <FiShoppingBag className='w-6 h-6' />
-              <p className='absolute right-[-5px] top-[-5px] w-4 text-center leading-4 bg-red-500 text-white aspect-square rounded-full text-[10px]'>
-                {getCartCount()}
-              </p>
-            </Link>
-          )}
-
-          <HiMenuAlt3 className='w-6 h-6 sm:hidden' onClick={() => setVisible(true)} />
         </div>
       </div>
 
-      <div className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all z-20 ${visible ? 'w-full' : 'w-0'}`}>
-        <div className='flex flex-col text-gray-800'>
-          <div onClick={() => setVisible(false)} className='flex items-center gap-3 p-4 cursor-pointer transition-all hover:bg-gray-200'>
-            <IoIosArrowDown className='w-6 h-6 rotate-90' />
-            <p className='text-xl font-semibold text-gray-700'>Back</p>
+      {/* Mobile menu */}
+      <div className={`fixed inset-0 bg-gray-800 bg-opacity-75 z-50 transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`fixed inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${visible ? 'translate-x-0' : 'translate-x-full'}`}>
+          <div className="flex items-center justify-between p-4 border-b">
+            <h2 className="text-lg font-medium text-gray-700">Menu</h2>
+            <button
+              className="text-gray-700 hover:text-pink-600 transition-colors"
+              onClick={() => setVisible(false)}
+            >
+              <IoIosArrowDown className="w-6 h-6 rotate-90" />
+            </button>
           </div>
-          <NavLink onClick={() => setVisible(false)} className='py-3 pl-6 text-xl font-bold text-gray-700 hover:text-gray-700 transition-all' to='/'>Home</NavLink>
-          <NavLink onClick={() => setVisible(false)} className='py-3 pl-6 text-xl font-bold text-gray-700 hover:text-gray-700 transition-all' to='/collections'>Collection</NavLink>
-          <NavLink onClick={() => setVisible(false)} className='py-3 pl-6 text-xl font-bold text-gray-700 hover:text-gray-700 transition-all' to='/about'>About</NavLink>
-          <NavLink onClick={() => setVisible(false)} className='py-3 pl-6 text-xl font-bold text-gray-700 hover:text-gray-700 transition-all' to='/contact'>Contact</NavLink>
+          <nav className="px-4 py-6 space-y-4">
+            <NavLink
+              to="/"
+              onClick={() => setVisible(false)}
+              className={({ isActive }) =>
+                `block py-2 text-base font-medium transition-colors hover:text-pink-600 ${isActive ? 'text-gray-600' : 'text-gray-700'}`
+              }
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/collections"
+              onClick={() => setVisible(false)}
+              className={({ isActive }) =>
+                `block py-2 text-base font-medium transition-colors hover:text-pink-600 ${isActive ? 'text-gray-600' : 'text-gray-700'}`
+              }
+            >
+              Collection
+            </NavLink>
+            <NavLink
+              to="/about"
+              onClick={() => setVisible(false)}
+              className={({ isActive }) =>
+                `block py-2 text-base font-medium transition-colors hover:text-pink-600 ${isActive ? 'text-gray-600' : 'text-gray-700'}`
+              }
+            >
+              About
+            </NavLink>
+            <NavLink
+              to="/contact"
+              onClick={() => setVisible(false)}
+              className={({ isActive }) =>
+                `block py-2 text-base font-medium transition-colors hover:text-pink-600 ${isActive ? 'text-gray-600' : 'text-gray-700'}`
+              }
+            >
+              Contact
+            </NavLink>
+          </nav>
         </div>
       </div>
     </div>
