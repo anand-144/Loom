@@ -6,7 +6,6 @@ import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
   const [form, setForm] = useState({
@@ -43,50 +42,61 @@ const PlaceOrder = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const initPay = (order) => {
+  const initPay = async (orderData, razorpayOrder) => {
     const options = {
-      key  : import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: order.currency,
-      name:'Order Payment',
-      description : 'Order Payment with razorpay',
-      order_id: order.id,
-      recepit: order.recepit,
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      name: 'Order Payment',
+      description: 'Order Payment with razorpay',
+      order_id: razorpayOrder.id,
       handler: async (response) => {
-        console.log(response)
         try {
+          const verifyData = {
+            ...response,
+            ...orderData,
+            razorpay_order_id: razorpayOrder.id
+          };
 
-          const {data} = await axios.post(`${backendUrl}/api/order/verifyRazorpay`, response, { headers: { token } });
+          const { data } = await axios.post(
+            `${backendUrl}/api/order/verifyRazorpay`,
+            verifyData,
+            { headers: { token } }
+          );
+
           if (data.success) {
-            navigate('/orders')
-            setCartItems({})
+            toast.success("Payment successful!");
+            setCartItems({});
+            navigate('/orders');
+          } else {
+            toast.error(data.message || "Payment failed");
           }
         } catch (error) {
-            console.log(error)
-            toast.error(error)
+          console.log(error);
+          toast.error("Payment verification failed");
+        }
+      },
+      modal: {
+        ondismiss: function() {
+          toast.error("Payment cancelled");
+        }
       }
-    }
-  }
-    const rzp = new window.Razorpay(options)
-    rzp.open()
-  }
+    };
 
-
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log("Form Submitted!");
 
     try {
       let orderItems = [];
-      console.log("Cart Items:", cartItems);
 
       for (const items in cartItems) {
         for (const item in cartItems[items]) {
           if (cartItems[items][item] > 0) {
             const itemInfo = products.find((product) => product._id === items);
-            console.log("Found Product:", itemInfo);
-
             if (itemInfo) {
               itemInfo.size = item;
               itemInfo.quantity = cartItems[items][item];
@@ -96,17 +106,22 @@ const PlaceOrder = () => {
         }
       }
 
-      let orderData  = {
-        userId: token,  // Assuming userId is stored in token
+      const orderData = {
+        userId: token,
         address: form,
         items: orderItems,
         amount: getCartAmount() + delivery_fee,
       };
-      
 
       if (method === "cod") {
-        const response = await axios.post(`${backendUrl}/api/order/place`, orderData, { headers: { token } });
+        const response = await axios.post(
+          `${backendUrl}/api/order/place`,
+          orderData,
+          { headers: { token } }
+        );
+        
         if (response.data.success) {
+          toast.success("Order placed successfully!");
           resetForm();
           setCartItems({});
           navigate('/orders');
@@ -114,32 +129,23 @@ const PlaceOrder = () => {
           toast.error(response.data.message);
         }
       } else if (method === "razorpay") {
-        const responseRazorpay = await axios.post(
-          `${backendUrl}/api/order/razorpay`, 
-          orderData,  // Fix: Send orderData in POST request body
+        const response = await axios.post(
+          `${backendUrl}/api/order/razorpay`,
+          orderData,
           { headers: { token } }
         );
         
-        if (responseRazorpay.data.success) {
-          initPay(responseRazorpay.data.order);
+        if (response.data.success) {
+          await initPay(orderData, response.data.order);
         } else {
-          toast.error(responseRazorpay.data.message);
+          toast.error(response.data.message);
         }
       }
-      
-      
-
-      console.log("Final Order Items:", orderItems);
     } catch (error) {
       console.error("Error:", error);
+      toast.error("Failed to process order");
     }
-
   };
-
-  
-
-
-
 
   const isFormComplete = Object.values(form).every((value) => value.trim() !== "") && method !== "";
 
@@ -232,7 +238,6 @@ const PlaceOrder = () => {
           value={form.phone}
         />
 
-        {/* Reset Button */}
         <button
           type="button"
           onClick={resetForm}

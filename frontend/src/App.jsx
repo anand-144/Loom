@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import {
   Home,
   Collections,
@@ -19,18 +19,20 @@ import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import ShopContextProvider from "./context/ShopContext";
 import DiscountBanner from "./components/DiscountBanner";
-import SizeChart from "./components/SizeChart"
+import SizeChart from "./components/SizeChart";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
+  // Get the current location using the useLocation hook
+  const location = useLocation();
+
   return (
     <ShopContextProvider>
       <div className="w-full min-h-screen overflow-x-hidden flex flex-col bg-gradient-to-br from-white to-gray-50">
         <ToastContainer />
-        {/* Render the discount banner above the Navbar */}
-        <DiscountBanner />
+        {location.pathname === "/" && <DiscountBanner />}
         <Navbar />
         <SearchBar />
         <main className="flex-grow container mx-auto px-4 sm:px-[5%] md:px-[7%] lg:px-[9%] py-8">

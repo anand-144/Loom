@@ -54,7 +54,9 @@ const Product = () => {
           const { averageRating, reviewCount } = res.data;
           setAggregatedRating({ averageRating, reviewCount });
         })
-        .catch((err) => console.error("Error fetching aggregated rating:", err));
+        .catch((err) =>
+          console.error("Error fetching aggregated rating:", err)
+        );
     }
   }, [productId, backendUrl]);
 
@@ -73,7 +75,6 @@ const Product = () => {
     }
   }
 
-  // Helper functions
   const calculateDiscountedPrice = (price) => {
     if (discount?.active && discount?.discountPercentage > 0) {
       return price - (price * discount.discountPercentage) / 100;
@@ -86,93 +87,77 @@ const Product = () => {
   };
 
   return productData ? (
-    <div className="container mx-auto px-4 py-6 md:py-12">
+    <div className="container mx-auto px-4 py-6 md:py-12 bg-white">
       {/* Breadcrumb */}
-      <nav className="flex flex-wrap items-center text-sm text-gray-500 mb-6 md:mb-8">
-        <Link to="/" className="hover:text-gray-900">
-          Home
-        </Link>
-        <span className="mx-2">/</span>
-        <Link to="/collections" className="hover:text-gray-900">
-          {productData.category}
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-gray-900">{productData.name}</span>
+      <nav className="flex flex-wrap items-center text-xs sm:text-sm text-gray-700 mb-4 md:mb-8">
+        <Link to="/" className="hover:text-black">Home</Link>
+        <span className="mx-1">/</span>
+        <Link to="/collections" className="hover:text-black">{productData.category}</Link>
+        <span className="mx-1">/</span>
+        <span className="text-black">{productData.name}</span>
       </nav>
 
       {/* Product Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
         {/* Product Images */}
         <div className="space-y-4">
-          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-gray-100 shadow-lg">
+          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-gray-50 shadow-md">
             <img
               src={image}
               alt={productData.name}
-              className="w-full h-full object-cover object-center transition-all duration-300"
+              className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
             />
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
             {productData.image.map((item, index) => (
               <button
                 key={index}
                 onClick={() => setImage(item)}
                 className={`overflow-hidden rounded-md transition-transform duration-200 transform hover:scale-105 ${
-                  item === image ? "ring-2 ring-black" : "ring-1 ring-gray-300"
+                  item === image ? "ring-2 ring-gray-900" : "ring-1 ring-gray-300"
                 }`}
               >
-                <img
-                  src={item}
-                  alt={`Thumbnail ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
+                <img src={item} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
               </button>
             ))}
           </div>
         </div>
 
         {/* Product Info */}
-        <div className="space-y-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+        <div className="space-y-4 md:space-y-6">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-black">
             {productData.name}
           </h1>
 
-          <ReadOnlyRating
-            averageRating={aggregatedRating.averageRating}
-            reviewCount={aggregatedRating.reviewCount}
-          />
+          <ReadOnlyRating averageRating={aggregatedRating.averageRating} reviewCount={aggregatedRating.reviewCount} />
 
           {/* Price Display with Discount */}
           <div>
             {discount?.active && discount?.discountPercentage > 0 ? (
               <div className="flex items-baseline space-x-2">
-                <p className="text-lg text-gray-500 line-through">
+                <p className="text-base sm:text-lg text-gray-500 line-through">
                   {currency}{formatPrice(productData.price)}
                 </p>
-                <p className="text-3xl font-semibold text-gray-800">
+                <p className="text-2xl sm:text-3xl font-semibold text-black">
                   {currency}{formatPrice(calculateDiscountedPrice(productData.price))}
                 </p>
               </div>
             ) : (
-              <p className="text-3xl font-semibold text-gray-800">
+              <p className="text-2xl sm:text-3xl font-semibold text-black">
                 {currency}{formatPrice(productData.price)}
               </p>
             )}
           </div>
 
-          <p className="text-gray-600 leading-relaxed">
+          <p className="text-xs sm:text-sm md:text-base text-gray-700 leading-relaxed">
             {productData.description}
           </p>
 
           {/* Size Selection */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-lg font-medium text-gray-800">
-                Select Size
-              </span>
-              <Link
-                to={`/size-chart/${productData.category.toLowerCase()}`}
-                className="text-sm text-blue-600 hover:underline"
-              >
+              <span className="text-sm sm:text-base font-medium text-black">Select Size</span>
+              <Link to={`/size-chart/${productData.category.toLowerCase()}`} className="text-xs sm:text-sm text-gray-700 hover:underline">
                 View Size Chart
               </Link>
             </div>
@@ -181,10 +166,10 @@ const Product = () => {
                 <button
                   key={index}
                   onClick={() => setSize(item)}
-                  className={`py-2 px-3 text-sm rounded border transition-colors duration-200 ${
+                  className={`py-1 sm:py-2 px-2 sm:px-3 text-xs sm:text-sm rounded border transition-colors duration-200 ${
                     size === item
-                      ? "bg-gray-800 text-white border-gray-800"
-                      : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+                      ? "bg-black text-white border-black"
+                      : "bg-white text-black border-gray-300 hover:bg-gray-100"
                   }`}
                 >
                   {item}
@@ -193,76 +178,63 @@ const Product = () => {
             </div>
           </div>
 
+          {/* ADD TO CART Button with Gradient */}
           <button
             onClick={() => addToCart(productData._id, size)}
-            className="w-full bg-gray-800 text-white py-3 rounded-lg hover:bg-gray-900 transition-colors"
+            className="w-full bg-gradient-to-r from-gray-700 via-black to-gray-700 text-slate-200 py-2 sm:py-3 rounded-lg hover:opacity-90 transition-colors"
           >
             ADD TO CART
           </button>
 
-          <hr className="border-gray-300" />
-          <div className="text-sm text-gray-600 space-y-1">
+          <hr className="border-gray-200" />
+          <div className="text-xs sm:text-sm text-gray-700 space-y-1">
             <p>100% Original Product.</p>
             <p>Cash on Delivery is available.</p>
             <p>Easy return and exchange policy within 7 days.</p>
           </div>
 
           {/* Product Details */}
-          <div className="mt-6">
-            <h2 className="text-lg font-bold text-gray-800 flex items-center">
+          <div className="mt-4 sm:mt-6">
+            <h2 className="text-sm sm:text-base md:text-lg font-bold text-black flex items-center">
               PRODUCT DETAILS
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 ml-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 13l4 4L19 7"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
             </h2>
-            <p className="mt-2 text-gray-700 leading-relaxed">
+            <p className="mt-1 text-xs sm:text-sm md:text-base text-gray-700 leading-relaxed">
               {productData.subDescription}
             </p>
-            <div className="mt-4">
-              <h3 className="font-bold text-gray-800">Material &amp; Care</h3>
-              <p className="text-gray-700">{productData.material}</p>
-              <p className="text-gray-700">{productData.care}</p>
+            <div className="mt-3">
+              <h3 className="text-sm sm:text-base font-bold text-black">
+                Material &amp; Care
+              </h3>
+              <p className="text-xs sm:text-sm md:text-base text-gray-700">
+                {productData.material}
+              </p>
+              <p className="text-xs sm:text-sm md:text-base text-gray-700">
+                {productData.care}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Reviews Section */}
-      <div className="mt-12 border-t pt-8">
+      <div className="mt-8 md:mt-12 border-t pt-6">
         <ProductReviews productId={productData._id} />
       </div>
 
       {/* Related Products Section */}
-      <div className="mt-10">
-        <RelatedProduct
-          category={productData.category}
-          subCategory={productData.subCategory}
-        />
+      <div className="mt-8 md:mt-10">
+        <RelatedProduct category={productData.category} subCategory={productData.subCategory} />
       </div>
     </div>
   ) : (
     <div className="min-h-screen flex items-center justify-center">
       <div className="flex space-x-2">
-        <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"></div>
-        <div
-          className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
-          style={{ animationDelay: "0.2s" }}
-        ></div>
-        <div
-          className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
-          style={{ animationDelay: "0.4s" }}
-        ></div>
+        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
       </div>
     </div>
   );

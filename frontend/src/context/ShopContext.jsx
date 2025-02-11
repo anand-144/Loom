@@ -1,8 +1,9 @@
-// /frontend/src/context/ShopContext.jsx
+// frontend/src/context/ShopContext.jsx
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import PropTypes from "prop-types";
 
 export const ShopContext = createContext();
 
@@ -23,6 +24,7 @@ const ShopContextProvider = (props) => {
   });
   const navigate = useNavigate();
 
+  // Persist token to localStorage whenever it changes
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
@@ -45,12 +47,15 @@ const ShopContextProvider = (props) => {
     fetchDiscount();
   }, [backendUrl]);
 
+  // addToCart function with toast notifications
   const addToCart = async (itemId, size) => {
+    // Check if a size has been selected
     if (!size) {
-      toast.error('Select Product Size');
+      toast.error("Please select a size before adding to cart!");
       return;
     }
 
+    // Update cartItems state locally
     let cartData = { ...cartItems };
 
     if (cartData[itemId]) {
@@ -65,6 +70,7 @@ const ShopContextProvider = (props) => {
 
     setCartItems(cartData);
 
+    // If token exists, update the cart on the backend
     if (token) {
       try {
         await axios.post(
@@ -72,13 +78,18 @@ const ShopContextProvider = (props) => {
           { itemId, size },
           { headers: { token } }
         );
+        toast.success("Product added to cart!");
       } catch (error) {
         console.error(error);
-        toast.error(error.message);
+        toast.error("Error adding product to cart!");
       }
+    } else {
+      // If no token, show an informational toast (optional)
+      toast.info("Product added locally (please log in for full functionality)");
     }
   };
 
+  // Other functions (updateCartItemQuantity, getCartCount, getCartAmount, etc.) remain unchanged
   const updateCartItemQuantity = async (itemId, size, quantity) => {
     let cartData = { ...cartItems };
 
@@ -101,26 +112,26 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  // Updated getCartAmount: Apply discount per product if active
+  const getCartCount = () => {
+    return Object.values(cartItems).reduce((totalCount, sizes) => {
+      return totalCount + Object.values(sizes).reduce((sum, qty) => sum + qty, 0);
+    }, 0);
+  };
+
   const getCartAmount = () => {
     return Object.entries(cartItems).reduce((totalAmount, [itemId, sizes]) => {
       const itemInfo = products.find((product) => product._id === itemId);
       if (!itemInfo) return totalAmount;
 
-      // Compute effective price for each product if discount is active
-      const effectivePrice = discount && discount.active && discount.discountPercentage > 0
-        ? itemInfo.price - (itemInfo.price * discount.discountPercentage) / 100
-        : itemInfo.price;
+      // Calculate effective price based on discount
+      const effectivePrice =
+        discount && discount.active && discount.discountPercentage > 0
+          ? itemInfo.price - (itemInfo.price * discount.discountPercentage) / 100
+          : itemInfo.price;
 
-      return totalAmount + Object.entries(sizes).reduce((sum, [size, qty]) => {
+      return totalAmount + Object.entries(sizes).reduce((sum, [, qty]) => {
         return sum + effectivePrice * qty;
       }, 0);
-    }, 0);
-  };
-
-  const getCartCount = () => {
-    return Object.values(cartItems).reduce((totalCount, sizes) => {
-      return totalCount + Object.values(sizes).reduce((sum, qty) => sum + qty, 0);
     }, 0);
   };
 
@@ -138,10 +149,8 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  // Fetch user cart if token exists
   const getUserCart = async (token) => {
     if (!token) return;
-
     try {
       const response = await axios.post(
         `${backendUrl}/api/cart/get`,
@@ -182,8 +191,8 @@ const ShopContextProvider = (props) => {
     backendUrl,
     token,
     setToken,
-    discount,    // Provide discount in context
-    setDiscount, // In case you want to update discount from the UI
+    discount,
+    setDiscount,
   };
 
   return (
@@ -192,5 +201,9 @@ const ShopContextProvider = (props) => {
     </ShopContext.Provider>
   );
 };
+ShopContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default ShopContextProvider;
+

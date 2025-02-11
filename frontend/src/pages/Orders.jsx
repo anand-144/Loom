@@ -1,5 +1,4 @@
-// /frontend/src/pages/Orders.jsx
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ShopContext } from "../context/ShopContext";
 import Title from '../components/Title';
@@ -11,12 +10,15 @@ const Orders = () => {
   const loadOrderData = async () => {
     try {
       if (!token) return;
-      const response = await axios.post(`${backendUrl}/api/order/userOrders`, {}, { headers: { token } });
+      const response = await axios.post(
+        `${backendUrl}/api/order/userOrders`,
+        {},
+        { headers: { token } }
+      );
       if (response.data.success) {
         let allOrdersItems = [];
         response.data.orders.forEach((order) => {
           order.items.forEach((item) => {
-            // Optionally, attach order-level details to the item
             item.status = order.status;
             item.payment = order.payment;
             item.paymentMethod = order.paymentMethod;
@@ -35,7 +37,6 @@ const Orders = () => {
     loadOrderData();
   }, [token]);
 
-  // Helper to calculate effective price for an order item
   const calculateEffectivePrice = (price) => {
     if (discount && discount.active && discount.discountPercentage > 0) {
       return price - (price * discount.discountPercentage) / 100;
@@ -51,7 +52,6 @@ const Orders = () => {
 
       <div>
         {orderData.map((item, index) => {
-          // Compute effective price for each order item
           const effectivePrice = calculateEffectivePrice(item.price);
           return (
             <div
@@ -90,7 +90,9 @@ const Orders = () => {
                   <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
                   <p className="text-sm md:text-base">{item.status}</p>
                 </div>
-                <button onClick={loadOrderData} className="border px-4 py-2 text-sm font-medium rounded-md">Track Order</button>
+                <button onClick={loadOrderData} className="border px-4 py-2 text-sm font-medium rounded-md">
+                  Track Order
+                </button>
               </div>
             </div>
           );
