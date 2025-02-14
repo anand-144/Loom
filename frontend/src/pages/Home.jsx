@@ -3,9 +3,9 @@ import { toast } from "react-toastify";
 import BestSeller from "../components/BestSeller";
 import Hero from "../components/Hero";
 import LatestCollection from "../components/LatestCollection";
-import NewsLetterBox from "../components/NewsLetterBox";
 import OurPolicy from "../components/OurPolicy";
-import DiscountBanner from "../components/DiscountBanner";
+import SeasonalWear from "../components/SeasonalWear";
+import Seasonal from "../components/Seasonal";
 
 const Home = () => {
   useEffect(() => {
@@ -29,12 +29,12 @@ const Home = () => {
 
   return (
     <div>
-      
       <Hero />
       <LatestCollection />
       <BestSeller />
+      <SeasonalWear />
+      <Seasonal />
       <OurPolicy />
-      <NewsLetterBox />
     </div>
   );
 };

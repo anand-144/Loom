@@ -6,6 +6,9 @@ import { RiArrowLeftSLine, RiArrowRightSLine, RiSparklingLine } from "react-icon
 
 const LatestCollection = () => {
   const { products } = useContext(ShopContext);
+  // Filter out seasonal products
+  const nonSeasonalProducts = products.filter((product) => !product.seasonal);
+
   const [visibleProducts, setVisibleProducts] = useState(5);
   const [imageIndexes, setImageIndexes] = useState({});
 
@@ -39,15 +42,21 @@ const LatestCollection = () => {
         </p>
       </div>
 
-      {products.length > 0 ? (
+      {nonSeasonalProducts.length > 0 ? (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 gap-y-6 sm:gap-y-8">
-            {products.slice(0, visibleProducts).map((item) => {
-              const images = [item.image1, item.image2, item.image3, item.image4, item.image5].filter(Boolean);
+            {nonSeasonalProducts.slice(0, visibleProducts).map((item) => {
+              const images = [
+                item.image1,
+                item.image2,
+                item.image3,
+                item.image4,
+                item.image5
+              ].filter(Boolean);
               const currentImage = images[imageIndexes[item._id] || 0] || item.image;
 
               return (
-                <div key={item._id} className="relative group transform transition-transform duration-300 hover:scale-105">
+                <div key={item._id} className="relative group transform transition-transform duration-300 hover:scale-105 mb-3">
                   <ProductItem id={item._id} image={currentImage} name={item.name} price={item.price} />
                   {images.length > 1 && (
                     <>
@@ -70,11 +79,11 @@ const LatestCollection = () => {
             })}
           </div>
 
-          {visibleProducts < products.length && (
+          {visibleProducts < nonSeasonalProducts.length && (
             <div className="text-center mt-12">
               <button
                 onClick={loadMoreProducts}
-                className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-gray-700 via-black  to-gray-700 text-white rounded-full hover:bg-gray-800 transform transition-all duration-300 hover:shadow-lg active:scale-95"
+                className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-gray-700 via-black to-gray-700 text-white rounded-full hover:bg-gray-800 transform transition-all duration-300 hover:shadow-lg active:scale-95"
               >
                 Load More Products
               </button>

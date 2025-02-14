@@ -14,9 +14,19 @@ export default {
           '0%': { transform: 'translateX(100%)' }, // Start from the right
           '100%': { transform: 'translateX(-100%)' }, // Move to the left
         },
+        horizontalMarquee: {
+          '0%': { left: '-10%' },
+          '100%': { left: '110%' },
+        },
+        verticalMarquee: {
+          '0%': { top: '-10%' },
+          '100%': { top: '110%' },
+        },
       },
       animation: {
         scroll: 'scroll 10s linear infinite', // Smooth scrolling animation
+        horizontalMarquee: 'horizontalMarquee 5s linear infinite',
+        verticalMarquee: 'verticalMarquee 5s linear infinite',
       },
       transitionDuration: {
         '2000': '2000ms',

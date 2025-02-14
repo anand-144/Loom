@@ -15,12 +15,14 @@ const EditProduct = ({ product, onClose, onUpdate, token }) => {
         category: '',
         subCategory: '',
         bestseller: false,
+        seasonal: '',
         sizes: []
     });
 
     // Example arrays for dropdown options
     const categories = ['Men', 'Women', 'Bestseller'];
-    const subCategories = ['Shirt', 'T-Shirt', 'Polos', 'Sweatshirts', 'Jacket', '', 'Jeans', 'Trousers', 'Cargo', 'Joggers', 'TrackPant', 'Shorts'];
+    const subCategories = ['Shirt', 'T-Shirt', 'Polos', 'Sweatshirts', 'Jacket', 'Jeans', 'Trousers', 'Cargo', 'Joggers', 'TrackPant', 'Shorts'];
+    const seasons = ["", "Winter", "Summer", "Autumn", "Spring"];
 
     // Define available sizes for topwear and bottomwear
     const topSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -38,6 +40,7 @@ const EditProduct = ({ product, onClose, onUpdate, token }) => {
                 category: product.category || '',
                 subCategory: product.subCategory || '',
                 bestseller: product.bestseller || false,
+                seasonal: product.seasonal || '',
                 sizes: product.sizes || []
             });
         }
@@ -51,7 +54,6 @@ const EditProduct = ({ product, onClose, onUpdate, token }) => {
         }));
     };
 
-    // This function handles the checkbox changes for both top and bottom sizes.
     const handleSizeChange = (e) => {
         const value = e.target.value;
         const isChecked = e.target.checked;
@@ -149,6 +151,25 @@ const EditProduct = ({ product, onClose, onUpdate, token }) => {
                                         {categories.map((cat) => (
                                             <option key={cat} value={cat}>
                                                 {cat}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Seasonal Wear Selection */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Seasonal Wear
+                                    </label>
+                                    <select
+                                        name="seasonal"
+                                        value={formData.seasonal}
+                                        onChange={handleChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    >
+                                        {seasons.map((season) => (
+                                            <option key={season} value={season}>
+                                                {season || "None"}
                                             </option>
                                         ))}
                                     </select>
@@ -268,7 +289,7 @@ const EditProduct = ({ product, onClose, onUpdate, token }) => {
                                             <input
                                                 type="checkbox"
                                                 value={size}
-                                                checked={formData.sizes.includes(String(size)) || formData.sizes.includes(size)} 
+                                                checked={formData.sizes.includes(String(size)) || formData.sizes.includes(size)}
                                                 onChange={handleSizeChange}
                                                 className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                             />

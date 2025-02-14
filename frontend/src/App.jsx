@@ -13,6 +13,7 @@ import {
   DeliveryPartner,
   Team,
 } from "./pages/";
+import SeasonalWearPage from "./pages/SeasonalWearPage"; // Import the SeasonalWearPage
 import Navbar from "./components/Navbar";
 import Exchange from "./pages/Exchange";
 import Footer from "./components/Footer";
@@ -25,7 +26,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
-  // Get the current location using the useLocation hook
   const location = useLocation();
 
   return (
@@ -51,6 +51,7 @@ const App = () => {
             <Route path="/deliverypartner" element={<DeliveryPartner />} />
             <Route path="/team" element={<Team />} />
             <Route path="/size-chart/:gender" element={<SizeChart />} />
+            <Route path="/seasonal-wear" element={<SeasonalWearPage />} />  {/* New Route */}
           </Routes>
         </main>
         <Footer />

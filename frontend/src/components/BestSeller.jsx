@@ -25,7 +25,7 @@ const BestSeller = () => {
   return (
     <div className="w-full overflow-hidden my-16 px-4 sm:px-6 lg:px-8">
       {/* Title Section */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-16">
         <div className="flex items-center justify-center gap-2 mb-4">
           <RiStarLine className="w-6 h-6 text-amber-500" />
           <Title text1={'BEST'} text2={'SELLERS'} />
@@ -38,7 +38,7 @@ const BestSeller = () => {
       </div>
 
       {/* Best Sellers Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 gap-y-6 sm:gap-y-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 gap-y-6 sm:gap-y-8 mb-3">
         {visibleItems.length > 0 ? (
           visibleItems.map((item) => (
             <div key={item._id} className="transform transition-transform duration-300 hover:scale-105">

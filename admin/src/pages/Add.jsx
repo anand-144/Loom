@@ -20,15 +20,17 @@ const Add = ({ token }) => {
   const [care, setCare] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('Men');
+  const [seasonal, setSeasonal] = useState('');
 
   // New state: Product Type & Subcategory
-  // productType can be "topwear" or "bottomwear"
   const [productType, setProductType] = useState("topwear");
-  // For topwear default subCategory is "Shirt" and for bottomwear it's "Jeans"
   const [subCategory, setSubCategory] = useState("Shirt");
 
   const [sizes, setSizes] = useState([]);
   const [bestseller, setBestseller] = useState(false);
+
+  // Available seasons
+  const seasons = ["", "Winter", "Summer", "Autumn", "Spring"];
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -47,6 +49,7 @@ const Add = ({ token }) => {
       formData.append('care', care);
       formData.append('price', price);
       formData.append('category', category);
+      formData.append('seasonal', seasonal);
       formData.append('subCategory', subCategory);
       formData.append('bestseller', bestseller);
       formData.append('sizes', JSON.stringify(sizes));
@@ -55,7 +58,7 @@ const Add = ({ token }) => {
       if (image2) formData.append('image2', image2);
       if (image3) formData.append('image3', image3);
       if (image4) formData.append('image4', image4);
-      if (image5) formData.append('image5', image5);  {/* Corrected key */}
+      if (image5) formData.append('image5', image5);
 
       const response = await axios.post(backendUrl + '/api/product/add/', formData, {
         headers: { token },
@@ -76,7 +79,7 @@ const Add = ({ token }) => {
         setPrice('');
         setSizes([]);
         setBestseller(false);
-        // Reset product type to default topwear and subCategory to "Shirt"
+        setSeasonal('');
         setProductType("topwear");
         setSubCategory("Shirt");
       } else {
@@ -199,6 +202,22 @@ const Add = ({ token }) => {
           >
             <option value="Men">Men</option>
             <option value="Women">Women</option>
+          </select>
+        </div>
+
+        {/* Seasonal Wear Selection */}
+        <div>
+          <p className="mb-2 text-lg font-medium text-gray-700">Seasonal Wear</p>
+          <select
+            className="w-full px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            value={seasonal}
+            onChange={(e) => setSeasonal(e.target.value)}
+          >
+            {seasons.map((season) => (
+              <option key={season} value={season}>
+                {season || "None"}
+              </option>
+            ))}
           </select>
         </div>
 

@@ -31,6 +31,7 @@ const Collections = () => {
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [bestseller, setBestSeller] = useState(false);
+  const [seasonalWear, setSeasonalWear] = useState(false);
   const [sortType, setSortType] = useState("relevant");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [visibleCount, setVisibleCount] = useState(12);
@@ -169,7 +170,7 @@ const Collections = () => {
 
             {/* Types Section */}
             <div className="border-2 border-gray-200 rounded-lg p-4 mb-6 hover:border-gray-300 transition-colors">
-              <h3 className="font-bold mb-4 text-gray-800">Types</h3>
+              <h3 className="font-bold mb-4 text-gray-800">Tops</h3>
               <div className="space-y-3">
                 {[
                   ["Shirt", PiShirtFoldedLight, PiShirtFoldedFill],
@@ -357,6 +358,17 @@ const Collections = () => {
                     />
                     <span>Bestseller</span>
                   </label>
+
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      value="Seasonal Wear"
+                      checked={seasonalWear}
+                      onChange={toggleCategory}
+                    />
+                    <span>Seasonal Wear</span>
+                  </label>
+
                 </div>
               </div>
 

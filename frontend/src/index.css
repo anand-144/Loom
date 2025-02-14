@@ -49,3 +49,21 @@ a.active hr {
 .custom-number-input {
   -moz-appearance: textfield; /* Firefox */
 }
+
+
+.marquee-mask {
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 20%,
+    black 80%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 20%,
+    black 80%,
+    transparent 100%
+  );
+}

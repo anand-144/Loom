@@ -3,7 +3,19 @@ import productModel from "../models/productModel.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const { name, subDescription, description, material, care, price, category, subCategory, sizes, bestseller } = req.body;
+    const { 
+      name, 
+      subDescription, 
+      description, 
+      material, 
+      care, 
+      price, 
+      category, 
+      subCategory, 
+      sizes, 
+      bestseller,
+      seasonal 
+    } = req.body;
 
     if (!name || !subDescription || !description || !material || !care || !price || !category || !subCategory) {
       return res.status(400).json({ success: false, message: "Required fields are missing" });
@@ -43,6 +55,7 @@ export const addProduct = async (req, res) => {
       category,
       subCategory,
       bestseller: bestseller === "true" || bestseller === true,
+      seasonal: seasonal || '',
       sizes: parsedSizes,
       image: imagesUrl,
       date: Date.now(),
@@ -64,10 +77,22 @@ export const addProduct = async (req, res) => {
   }
 };
 
-// Function for updating a product
 export const updateProduct = async (req, res) => {
   try {
-    const { id, name, subDescription, description, material, care, price, category, subCategory, bestseller, sizes } = req.body;
+    const { 
+      id, 
+      name, 
+      subDescription, 
+      description, 
+      material, 
+      care, 
+      price, 
+      category, 
+      subCategory, 
+      bestseller, 
+      seasonal,
+      sizes 
+    } = req.body;
 
     if (!id || !name || !subDescription || !description || !material || !care || !price || !category || !subCategory) {
       return res.status(400).json({ success: false, message: "Required fields are missing" });
@@ -92,6 +117,7 @@ export const updateProduct = async (req, res) => {
         category,
         subCategory,
         bestseller: bestseller === "true" || bestseller === true,
+        seasonal: seasonal || '',
         sizes: parsedSizes,
       },
       { new: true }
@@ -134,7 +160,6 @@ export const removeProduct = async (req, res) => {
   }
 };
 
-// Function for fetching a single product
 export const singleProduct = async (req, res) => {
   try {
     const { productId } = req.body;

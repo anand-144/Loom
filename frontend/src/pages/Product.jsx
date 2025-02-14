@@ -34,6 +34,12 @@ const Product = () => {
     "Sweatshirts",
     "Jacket",
   ];
+  const seasonalCategories = [
+    "Winter",
+    "Summer",
+    "Autumn",
+    "Spring",
+  ];
 
   useEffect(() => {
     if (products.length > 0) {

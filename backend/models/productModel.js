@@ -7,11 +7,12 @@ const productSchema = new mongoose.Schema({
     material: { type: String, required: true },
     care: { type: String, required: true },
     price: { type: Number, required: true },
-    image: { type: [String], required: true }, // Array of image URLs
+    image: { type: [String], required: true },
     category: { type: String, required: true },
     subCategory: { type: String, required: true },
-    sizes: { type: [String], required: true }, // Use [String] or [mongoose.Schema.Types.Mixed] if needed
+    sizes: { type: [String], required: true },
     bestseller: { type: Boolean, default: false },
+    seasonal: { type: String, enum: ['Winter', 'Summer', 'Autumn', 'Spring', ''], default: '' },
     date: { type: Number, required: true },
 }, { timestamps: true });
 

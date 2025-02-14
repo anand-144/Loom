@@ -1,4 +1,3 @@
-// frontend/src/context/ShopContext.jsx
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -17,21 +16,21 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState(() => localStorage.getItem('token') || '');
-  // Discount state with default values
   const [discount, setDiscount] = useState({
     active: false,
     discountPercentage: 0,
   });
+  const [selectedSeason, setSelectedSeason] = useState('Winter'); // Default season
   const navigate = useNavigate();
 
-  // Persist token to localStorage whenever it changes
+  const seasons = ["Winter", "Summer", "Autumn", "Spring"];
+
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
     }
   }, [token]);
 
-  // Fetch discount settings from the backend
   useEffect(() => {
     const fetchDiscount = async () => {
       try {
@@ -47,15 +46,20 @@ const ShopContextProvider = (props) => {
     fetchDiscount();
   }, [backendUrl]);
 
-  // addToCart function with toast notifications
+  const getSeasonalProducts = (season) => {
+    return products.filter(product => product.seasonal === season);
+  };
+
+  const getProductsByCategory = (category) => {
+    return products.filter(product => product.category === category);
+  };
+
   const addToCart = async (itemId, size) => {
-    // Check if a size has been selected
     if (!size) {
       toast.error("Please select a size before adding to cart!");
       return;
     }
 
-    // Update cartItems state locally
     let cartData = { ...cartItems };
 
     if (cartData[itemId]) {
@@ -70,7 +74,6 @@ const ShopContextProvider = (props) => {
 
     setCartItems(cartData);
 
-    // If token exists, update the cart on the backend
     if (token) {
       try {
         await axios.post(
@@ -84,12 +87,10 @@ const ShopContextProvider = (props) => {
         toast.error("Error adding product to cart!");
       }
     } else {
-      // If no token, show an informational toast (optional)
       toast.info("Product added locally (please log in for full functionality)");
     }
   };
 
-  // Other functions (updateCartItemQuantity, getCartCount, getCartAmount, etc.) remain unchanged
   const updateCartItemQuantity = async (itemId, size, quantity) => {
     let cartData = { ...cartItems };
 
@@ -123,7 +124,6 @@ const ShopContextProvider = (props) => {
       const itemInfo = products.find((product) => product._id === itemId);
       if (!itemInfo) return totalAmount;
 
-      // Calculate effective price based on discount
       const effectivePrice =
         discount && discount.active && discount.discountPercentage > 0
           ? itemInfo.price - (itemInfo.price * discount.discountPercentage) / 100
@@ -193,6 +193,11 @@ const ShopContextProvider = (props) => {
     setToken,
     discount,
     setDiscount,
+    seasons,
+    selectedSeason,
+    setSelectedSeason,
+    getSeasonalProducts,
+    getProductsByCategory,
   };
 
   return (
@@ -201,9 +206,9 @@ const ShopContextProvider = (props) => {
     </ShopContext.Provider>
   );
 };
+
 ShopContextProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
 export default ShopContextProvider;
-

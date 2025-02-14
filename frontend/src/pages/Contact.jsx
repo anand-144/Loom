@@ -1,6 +1,5 @@
 import Title from '../components/Title';
 import { assets } from '../assets/frontend_assets/assets';
-import NewsLetterBox from '../components/NewsLetterBox';
 import { Link } from 'react-router-dom';
 
 const Contact = () => {
@@ -33,8 +32,6 @@ const Contact = () => {
         </div>
       </div>
 
-      {/* Newsletter Box */}
-      <NewsLetterBox />
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import Title from '../components/Title'
 import { assets } from '../assets/frontend_assets/assets';
-import NewsLetterBox from '../components/NewsLetterBox'
 
 
 
@@ -42,8 +41,6 @@ const About = () => {
           <p className='text-gray-500'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur, a!</p>
         </div>
       </div>
-
-      <NewsLetterBox />
 
     </div>
   )
