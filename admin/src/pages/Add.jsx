@@ -29,6 +29,9 @@ const Add = ({ token }) => {
   const [sizes, setSizes] = useState([]);
   const [bestseller, setBestseller] = useState(false);
 
+  // New state: Stock
+  const [stock, setStock] = useState('');
+
   // Available seasons
   const seasons = ["", "Winter", "Summer", "Autumn", "Spring"];
 
@@ -53,6 +56,7 @@ const Add = ({ token }) => {
       formData.append('subCategory', subCategory);
       formData.append('bestseller', bestseller);
       formData.append('sizes', JSON.stringify(sizes));
+      formData.append('stock', stock); // New: Append stock
 
       if (image1) formData.append('image1', image1);
       if (image2) formData.append('image2', image2);
@@ -82,6 +86,7 @@ const Add = ({ token }) => {
         setSeasonal('');
         setProductType("topwear");
         setSubCategory("Shirt");
+        setStock(''); // Reset stock field
       } else {
         toast.error('😣' + response.data.message);
       }
@@ -190,8 +195,8 @@ const Add = ({ token }) => {
         </div>
       </div>
 
-      {/* Category, Type & Price */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+      {/* Category, Type, Price & Stock */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
         {/* Product Category */}
         <div>
           <p className="mb-2 text-lg font-medium text-gray-700">Product Category</p>
@@ -305,9 +310,22 @@ const Add = ({ token }) => {
             value={price}
           />
         </div>
+
+        {/* Product Stock */}
+        <div>
+          <p className="mb-2 text-lg font-medium text-gray-700">Product Stock</p>
+          <input
+            className="w-full px-4 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c586a5]"
+            type="number"
+            placeholder="Enter available stock"
+            required
+            onChange={(e) => setStock(e.target.value)}
+            value={stock}
+          />
+        </div>
       </div>
 
-      {/* Size Selection */}
+      {/* Size Selection for Topwear */}
       <div>
         <p className="mb-2 text-gray-700 text-lg">Product Sizes Topwear</p>
         <div className="flex gap-3">
@@ -328,6 +346,7 @@ const Add = ({ token }) => {
         </div>
       </div>
 
+      {/* Size Selection for Bottomwear */}
       <div>
         <p className="mb-2 text-gray-700 text-lg">Product Sizes Bottomwear</p>
         <div className="flex gap-3">

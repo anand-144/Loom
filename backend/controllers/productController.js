@@ -14,7 +14,8 @@ export const addProduct = async (req, res) => {
       subCategory, 
       sizes, 
       bestseller,
-      seasonal 
+      seasonal,
+      stock  // New: stock field from request body
     } = req.body;
 
     if (!name || !subDescription || !description || !material || !care || !price || !category || !subCategory) {
@@ -52,6 +53,7 @@ export const addProduct = async (req, res) => {
       material,
       care,
       price: Number(price),
+      stock: Number(stock),  // Set stock from the request (converted to Number)
       category,
       subCategory,
       bestseller: bestseller === "true" || bestseller === true,
@@ -91,7 +93,8 @@ export const updateProduct = async (req, res) => {
       subCategory, 
       bestseller, 
       seasonal,
-      sizes 
+      sizes,
+      stock  // New: stock field for update
     } = req.body;
 
     if (!id || !name || !subDescription || !description || !material || !care || !price || !category || !subCategory) {
@@ -114,6 +117,7 @@ export const updateProduct = async (req, res) => {
         material,
         care,
         price: Number(price),
+        stock: Number(stock),  // Update stock field
         category,
         subCategory,
         bestseller: bestseller === "true" || bestseller === true,
@@ -138,7 +142,6 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-// Function for listing products
 export const listProduct = async (req, res) => {
   try {
       const products = await productModel.find({});
@@ -149,7 +152,6 @@ export const listProduct = async (req, res) => {
   }
 };
 
-// Function for removing a product
 export const removeProduct = async (req, res) => {
   try {
     await productModel.findByIdAndDelete(req.body.id);

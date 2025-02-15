@@ -54,10 +54,6 @@ const Collections = () => {
         return (
           <FaStar className={`text-2xl ${isActive ? "text-yellow-500" : "text-gray-500"}`} />
         );
-      case "Seasonal Wear":
-        return (
-          <GiClothes className={`text-2xl ${isActive ? "text-green-500" : "text-gray-500"}`} />
-        );
       default:
         return null;
     }
@@ -429,7 +425,7 @@ const Collections = () => {
               <div className="border-b pb-4">
                 <p className="font-bold mb-3">Category</p>
                 <div className="flex flex-wrap gap-3">
-                  {["Men", "Women", "Bestseller", "Seasonal Wear"].map((item) => {
+                  {["Men", "Women", "Bestseller"].map((item) => {
                     const isActive = item === "Bestseller" ? bestseller : category.includes(item);
                     return (
                       <motion.button

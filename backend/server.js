@@ -9,6 +9,8 @@ import cartRouter from './routes/cartRoute.js';
 import orderRouter from './routes/orderRoute.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import discountRouter from './routes/discountRoute.js';
+import metricsRouter from './routes/metricsRoute.js';
+import paymentBreakdownRouter from './routes/pBdownRoute.js'; // Import the new router
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -28,6 +30,8 @@ app.use('/api/cart', cartRouter);
 app.use('/api/order', orderRouter);
 app.use('/api/review', reviewRoutes);
 app.use('/api/discount', discountRouter);
+app.use('/api/metrics', metricsRouter);
+app.use('/api/metrics/payment-breakdown', paymentBreakdownRouter); // Now defined
 
 app.get('/', (req, res) => {
   res.send("API WORKING");

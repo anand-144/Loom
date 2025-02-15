@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Login, Navbar, Sidebar } from './components';
-import { Add, List, Orders, DiscountSettings } from './pages';
+import { Add, List, Orders, DiscountSettings , Dashboard } from './pages';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -39,6 +39,7 @@ const App = () => {
                 <Route path='/list' element={<List token={token} />} />
                 <Route path='/orders' element={<Orders token={token} />} />
                 <Route path='/discount-settings' element={<DiscountSettings />} />
+                <Route path='/dashboard' element={<Dashboard />} />
               </Routes>
             </div>
           </div>

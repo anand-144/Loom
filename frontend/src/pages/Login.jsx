@@ -34,7 +34,8 @@ const Login = () => {
       password,
     };
 
-    const endpoint = currentState === "Login" ? "/api/user/login" : "/api/user/register";
+    const endpoint =
+      currentState === "Login" ? "/api/user/login" : "/api/user/register";
 
     try {
       const response = await fetch(`${backendUrl}${endpoint}`, {
@@ -48,7 +49,10 @@ const Login = () => {
       if (data.success) {
         if (currentState === "Login") {
           if (rememberMe) {
-            const encryptedPassword = CryptoJS.AES.encrypt(password, "secret-key").toString();
+            const encryptedPassword = CryptoJS.AES.encrypt(
+              password,
+              "secret-key"
+            ).toString();
             localStorage.setItem(
               "loginCredentials",
               JSON.stringify({
@@ -85,11 +89,17 @@ const Login = () => {
     if (currentState === "Login") {
       const savedCredentials = localStorage.getItem("loginCredentials");
       if (savedCredentials) {
-        const { identifier: savedIdentifier, password: encryptedPassword, rememberMe: savedRememberMe } = JSON.parse(savedCredentials);
+        const {
+          identifier: savedIdentifier,
+          password: encryptedPassword,
+          rememberMe: savedRememberMe,
+        } = JSON.parse(savedCredentials);
         setIdentifier(savedIdentifier || "");
         setPassword(
           encryptedPassword
-            ? CryptoJS.AES.decrypt(encryptedPassword, "secret-key").toString(CryptoJS.enc.Utf8)
+            ? CryptoJS.AES.decrypt(encryptedPassword, "secret-key").toString(
+                CryptoJS.enc.Utf8
+              )
             : ""
         );
         setRememberMe(savedRememberMe || false);
@@ -114,7 +124,10 @@ const Login = () => {
         <form onSubmit={onSubmitHandler} className="mt-8 space-y-6 ">
           {currentState !== "Login" && (
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Name
               </label>
               <input
@@ -126,12 +139,14 @@ const Login = () => {
                 placeholder="Enter your name"
                 required
               />
-
             </div>
           )}
 
           <div>
-            <label htmlFor="identifier" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="identifier"
+              className="block text-sm font-medium text-gray-700"
+            >
               {currentState === "Login" ? "Email or Contact" : "Email"}
             </label>
             <input
@@ -140,14 +155,21 @@ const Login = () => {
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm transition-all "
-              placeholder={currentState === "Login" ? "Enter email or contact" : "Enter email"}
+              placeholder={
+                currentState === "Login"
+                  ? "Enter email or contact"
+                  : "Enter email"
+              }
               required
             />
           </div>
 
-          {currentState  === "SignUp" && (
+          {currentState === "SignUp" && (
             <div>
-              <label htmlFor="contact" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="contact"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Contact Number
               </label>
               <input
@@ -164,7 +186,10 @@ const Login = () => {
           )}
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <div className="relative mt-1">
@@ -182,61 +207,117 @@ const Login = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 hover:text-gray-700 transition-colors"
               >
-                {showPassword ? <IoMdEyeOff size={20} /> : <IoMdEye size={20} />}
+                {showPassword ? (
+                  <IoMdEyeOff size={20} />
+                ) : (
+                  <IoMdEye size={20} />
+                )}
               </button>
             </div>
           </div>
 
           {currentState === "Login" && (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  checked={rememberMe}
-                  onChange={() => setRememberMe(!rememberMe)}
-                  className="h-4 w-4 text-gray-700 border-gray-300 rounded"
-                />
-                <label htmlFor="rememberMe" className="ml-2 block text-sm">
-                  Remember me
-                </label>
+            <>
+              {/* For larger screens (sm and up): Checkbox and forgot password in one row */}
+              <div className="hidden sm:flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="rememberMe"
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
+                    className="h-4 w-4 text-gray-700 border-gray-300 rounded"
+                  />
+                  <label htmlFor="rememberMe" className="ml-2 block text-sm">
+                    Remember me
+                  </label>
+                </div>
+                <div className="text-sm">
+                  <a href="#" className="font-medium hover:text-gray-700">
+                    Forgot password?
+                  </a>
+                </div>
               </div>
-              <div className="text-sm">
-                <a href="#" className="font-medium  hover:text-gray-700">
-                  Forgot password?
-                </a>
+
+              {/* For mobile devices: Only show checkbox here */}
+              <div className="sm:hidden">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="rememberMe"
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
+                    className="h-4 w-4 text-gray-700 border-gray-300 rounded"
+                  />
+                  <label htmlFor="rememberMe" className="ml-2 block text-sm">
+                    Remember me
+                  </label>
+                </div>
               </div>
-            </div>
+            </>
           )}
 
           <button
             type="submit"
             disabled={loading}
             className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white hover:text-gray-200 
-              ${loading ? 'bg-gray-400' : 'bg-gray-800 hover:bg-gray-700'} 
+              ${
+                loading ? "bg-gray-400" : "bg-gray-800 hover:bg-gray-700"
+              } 
               focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors`}
           >
             {loading ? (
               <div className="flex items-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 "
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Processing...
               </div>
+            ) : currentState === "Login" ? (
+              "Sign In"
             ) : (
-              currentState === "Login" ? "Sign In" : "Sign Up"
+              "Sign Up"
             )}
           </button>
+
+          {/* For mobile devices, display the forgot password link below the sign in button */}
+          {currentState === "Login" && (
+            <div className="sm:hidden text-center mt-4">
+              <a href="#" className="text-sm font-medium hover:text-gray-700">
+                Forgot password?
+              </a>
+            </div>
+          )}
         </form>
 
         <div className="text-center mt-4">
           <button
             type="button"
-            onClick={() => setCurrentState(currentState === "Login" ? "SignUp" : "Login")}
-            className="text-sm font-medium  hover:text-gray-700 transition-colors"
+            onClick={() =>
+              setCurrentState(currentState === "Login" ? "SignUp" : "Login")
+            }
+            className="text-sm font-medium hover:text-gray-700 transition-colors"
           >
-            {currentState === "Login" ? "Create new account" : "Already have an account? Login"}
+            {currentState === "Login"
+              ? "Create new account"
+              : "Already have an account? Login"}
           </button>
         </div>
       </div>

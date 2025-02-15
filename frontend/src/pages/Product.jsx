@@ -1,4 +1,3 @@
-// frontend/src/pages/Product.jsx
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
@@ -9,8 +8,7 @@ import ProductReviews from "../components/ProductReviews";
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart, backendUrl, discount } =
-    useContext(ShopContext);
+  const { products, currency, addToCart, backendUrl, discount } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -19,27 +17,9 @@ const Product = () => {
     reviewCount: 0,
   });
 
-  const bottomWearCategories = [
-    "Jeans",
-    "Trousers",
-    "Cargo",
-    "Joggers",
-    "TrackPant",
-    "Shorts",
-  ];
-  const topWearCategories = [
-    "Shirt",
-    "T-Shirt",
-    "Polos",
-    "Sweatshirts",
-    "Jacket",
-  ];
-  const seasonalCategories = [
-    "Winter",
-    "Summer",
-    "Autumn",
-    "Spring",
-  ];
+  const bottomWearCategories = ["Jeans", "Trousers", "Cargo", "Joggers", "TrackPant", "Shorts"];
+  const topWearCategories = ["Shirt", "T-Shirt", "Polos", "Sweatshirts", "Jacket"];
+  const seasonalCategories = ["Winter", "Summer", "Autumn", "Spring"];
 
   useEffect(() => {
     if (products.length > 0) {
@@ -90,6 +70,17 @@ const Product = () => {
 
   const formatPrice = (price) => {
     return price.toFixed(2).replace(/\.00$/, '');
+  };
+
+  // Render stock badge based on productData.stock value
+  const renderStockBadge = () => {
+    if (productData.stock === 0) {
+      return <span className="text-red-600 font-bold">Out of Stock</span>;
+    } else if (productData.stock < 10) {
+      return <span className="text-orange-600 font-bold">Low Stock ({productData.stock})</span>;
+    } else {
+      return <span className="text-green-600 font-bold">In Stock: {productData.stock}</span>;
+    }
   };
 
   return productData ? (
@@ -153,6 +144,11 @@ const Product = () => {
                 {currency}{formatPrice(productData.price)}
               </p>
             )}
+          </div>
+
+          {/* Stock Information */}
+          <div className="mt-2">
+            {renderStockBadge()}
           </div>
 
           <p className="text-xs sm:text-sm md:text-base text-gray-700 leading-relaxed">

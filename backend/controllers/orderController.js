@@ -1,5 +1,6 @@
 import orderModel from '../models/orderModels.js';
 import userModel from '../models/userModel.js';
+import productModel from '../models/productModel.js'; // Import the product model to update stock
 import razorpay from 'razorpay';
 
 const razorpayInstance = new razorpay({
@@ -26,9 +27,17 @@ const placeOrder = async (req, res) => {
         const newOrder = new orderModel(orderData);
         await newOrder.save();
 
+        // Reduce stock for each ordered item
+        if (items && items.length > 0) {
+            for (const item of items) {
+                // Assuming each item has a productId and quantity
+                await productModel.findByIdAndUpdate(item.productId, { $inc: { stock: -item.quantity } });
+            }
+        }
+
+        // Clear user's cart
         await userModel.findByIdAndUpdate(userId, { cartData: {} });
         res.json({ success: true, message: "Order Placed Successfully" });
-
     } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
@@ -48,7 +57,6 @@ const placeOrderRazorpay = async (req, res) => {
         
         const order = await razorpayInstance.orders.create(options);
         res.json({ success: true, order });
-
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
@@ -76,13 +84,21 @@ const verifyRazorpay = async (req, res) => {
 
             const newOrder = new orderModel(orderData);
             await newOrder.save();
+
+            // Reduce stock for each ordered item
+            if (items && items.length > 0) {
+                for (const item of items) {
+                    await productModel.findByIdAndUpdate(item.productId, { $inc: { stock: -item.quantity } });
+                }
+            }
+
+            // Clear user's cart
             await userModel.findByIdAndUpdate(userId, { cartData: {} });
             
             res.json({ success: true, message: "Payment Successful" });
         } else {
             res.json({ success: false, message: "Payment Failed" });
         }
-
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
