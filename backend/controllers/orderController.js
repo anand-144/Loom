@@ -128,13 +128,20 @@ const userOrders = async (req, res) => {
 
 const updateOrderStatus = async (req, res) => {
     try {
-        const { orderId, status } = req.body;
-        await orderModel.findByIdAndUpdate(orderId, { status });
-        res.json({ success: true, message: 'Status Updated' });
+        const { orderId, status, trackingId, courier } = req.body;
+
+        await orderModel.findByIdAndUpdate(orderId, {
+            status,
+            ...(trackingId && { trackingId }),
+            ...(courier && { courier })
+        });
+
+        res.json({ success: true, message: 'Order updated successfully' });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
     }
 };
+
 
 export { placeOrder, verifyRazorpay, placeOrderRazorpay, allOrders, userOrders, updateOrderStatus };

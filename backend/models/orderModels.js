@@ -8,7 +8,10 @@ const orderSchema = new mongoose.Schema({
     paymentMethod: { type: String, required: true },
     payment: { type: Boolean, default: false },
     status: { type: String, default: "Pending" },  // Add default status
-    date: { type: Date, default: Date.now }  // Ensure default date
+    date: { type: Date, default: Date.now },  // Ensure default date
+
+    trackingId: { type: String, default: "" },
+    courier: { type: String, default: "" }
 });
 
 
