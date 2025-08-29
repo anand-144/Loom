@@ -60,7 +60,7 @@ const Seasonal = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="relative min-w-[120px] sm:min-w-[140px] md:min-w-[160px] transition-transform duration-300 hover:scale-105"
+                className="min-w-[160px] sm:min-w-[180px] md:min-w-[200px] relative group transform transition-transform duration-300 hover:scale-10"
               >
                 {/* Seasonal Tag */}
                 <div className="absolute top-2 left-2 z-20 bg-black/70 text-white text-xs px-3 py-1 rounded-full shadow-md pointer-events-none">
@@ -68,7 +68,7 @@ const Seasonal = () => {
                 </div>
 
                 {/* Product Card */}
-                <div className="relative z-10">
+                <div className="relative z-10 ">
                   <ProductItem
                     id={item._id}
                     name={item.name}
