@@ -1,8 +1,8 @@
-import { useState, useContext, useEffect } from 'react';
-import { ShopContext } from '../context/ShopContext';
-import Title from './Title';
-import ProductItem from './ProductItem';
-import { RiStarLine } from 'react-icons/ri';
+import { useState, useContext, useEffect } from "react";
+import { ShopContext } from "../context/ShopContext";
+import Title from "./Title";
+import ProductItem from "./ProductItem";
+import { RiStarLine } from "react-icons/ri";
 
 const BestSeller = () => {
   const { products } = useContext(ShopContext);
@@ -23,25 +23,33 @@ const BestSeller = () => {
   const visibleItems = bestSeller.slice(0, visibleCount);
 
   return (
-    <div className="w-full overflow-hidden my-16 px-4 sm:px-6 lg:px-8">
+    <div className="w-full my-16 px-4 sm:px-6 lg:px-8">
       {/* Title Section */}
-      <div className="text-center mb-16">
+      <div className="text-center mb-12">
         <div className="flex items-center justify-center gap-2 mb-4">
           <RiStarLine className="w-6 h-6 text-amber-500" />
-          <Title text1={'BEST'} text2={'SELLERS'} />
+          <Title text1={"BEST"} text2={"SELLERS"} />
           <RiStarLine className="w-6 h-6 text-amber-500" />
         </div>
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-gray-600 leading-relaxed">
-          Discover our most popular products, handpicked for their outstanding value and quality.
-          Each piece represents excellence in craftsmanship and style.
+          Discover our most popular products, handpicked for their outstanding
+          value and quality.
         </p>
       </div>
 
       {/* Best Sellers Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 gap-y-6 sm:gap-y-8 mb-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {visibleItems.length > 0 ? (
           visibleItems.map((item) => (
-            <div key={item._id} className="transform transition-transform duration-300 hover:scale-105">
+            <div
+              key={item._id}
+              className=" relative group transform transition-transform duration-300 hover:scale-10 min-w-[160px] sm:min-w-[180px] md:min-w-[200px]"
+            >
+              {/* BEST tag */}
+              <span className="absolute top-3 left-3 bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-md z-10">
+                BEST
+              </span>
+
               <ProductItem
                 id={item._id}
                 name={item.name}
@@ -63,7 +71,7 @@ const BestSeller = () => {
       {visibleCount < bestSeller.length && (
         <div className="text-center mt-12">
           <button
-            className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-gray-700 via-black  to-gray-700   text-white rounded-full hover:bg-gray-800 transform transition-all duration-300 hover:shadow-lg active:scale-95"
+            className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-gray-700 via-black to-gray-700 text-white rounded-full hover:bg-gray-800 transform transition-all duration-300 hover:shadow-lg active:scale-95"
             onClick={handleLoadMore}
           >
             Load More Products
